@@ -270,7 +270,7 @@ jobs:
 
       - name: Build Qt
         if: ${{ matrix.os == 'macos-14' }}
-        uses: ./.github/actions/arm64_build_qt5
+        uses: ./.github/actions/build-qt5-for-arm64
         with:
           qt-version: "5.15.15"
           python3-version: "3.11.9"
