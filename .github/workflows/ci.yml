@@ -221,6 +221,11 @@ jobs:
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # 4.1.7
         with:
           submodules: recursive
+
+      - name: Display repository files
+        run: |
+          ls -al .github
+          ls -al .github/actions
         
       - name: Activate Python ${{ matrix.python-version }}
         uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # 5.2.0
@@ -263,7 +268,7 @@ jobs:
           unzip file.zip
           cp $(unzip -l file.zip | awk 'NR==4 {print $4}') ${{ github.workspace }}/deps/Qt/${{ matrix.qt-version }}/clang_64/mkspecs/features/toolchain.prf
 
-      - name: Deploy to S
+      - name: Build Qt
         if: ${{ matrix.os == 'macos-14' }}
         uses: ./.github/actions/arm64_build_qt5
         with:
