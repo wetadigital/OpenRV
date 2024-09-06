@@ -16,6 +16,10 @@ inputs:
   qt-output:
     description: 'qt output'
     required: true
+outputs:
+  qt-cache-hit:
+    description: "Qt Cache hit"
+    value: ${{ steps.arm64-qt-cache.outputs.cached }}
 runs:
   using: "composite"
   steps:
@@ -23,8 +27,14 @@ runs:
         uses: actions/cache@v4
         id: arm64-qt
         with:
-          path: ./qt-release
+          path: ./${{ inputs.qt-output }}
           key: arm64-qt-${{ inputs.qt-version }}
+
+      - name: Set output for action
+        id: arm64-qt-cache
+        run: |
+          echo "cached=${{ steps.arm64-qt.outputs.cache-hit }}" >> $GITHUB_OUTPUT
+        shell: bash
           
       - name: Switch to XCode 14
         if: steps.arm64-qt.outputs.cache-hit != 'true'
@@ -71,8 +81,8 @@ runs:
         if: steps.arm64-qt.outputs.cache-hit != 'true'
         run: |
           echo $PATH
-          pyenv install ${{ inputs.python3-version }} ${{ matrix.python2-version }}
-          pyenv global ${{ inputs.python3-version }} ${{ matrix.python2-version }}
+          pyenv install ${{ inputs.python3-version }} ${{ inputs.python2-version }}
+          pyenv global ${{ inputs.python3-version }} ${{ inputs.python2-version }}
         shell: bash
 
       - name: Display Python installation location
@@ -155,4 +165,3 @@ runs:
           ls -al ./${{ inputs.qt-output }}
           file ./${{ inputs.qt-output }}/bin/qmake
         shell: bash
-          

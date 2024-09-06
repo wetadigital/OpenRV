@@ -7,6 +7,7 @@ on:
       - '**.md'
       - 'LICENSE'
       - 'Notice.txt'
+      - 'rvcmds.sh'
 
   pull_request:
     # Skip jobs when only those files are changed.
@@ -14,6 +15,7 @@ on:
       - '**.md'
       - 'LICENSE'
       - 'Notice.txt'
+      - 'rvcmds.sh'
 
   schedule:
     # Midnight build every day
@@ -63,6 +65,26 @@ jobs:
             python-version: "3.11.8"
             vfx-platform: "CY2023"
             extra_repo: "crb"
+          - os: "ubuntu-latest"
+            rocky-version: "8"
+            image: "amd64/rockylinux:8"
+            arch-type: "x86_64"
+            build-type: "Debug"
+            qt-version: "5.15.2"
+            cmake-version: "3.29.8"
+            python-version: "3.11.8"
+            vfx-platform: "CY2023"
+            extra_repo: "powertools"
+          - os: "ubuntu-latest"
+            rocky-version: "9"
+            image: "amd64/rockylinux:9"
+            arch-type: "x86_64"
+            build-type: "Debug"
+            qt-version: "5.15.2"
+            cmake-version: "3.29.8"
+            python-version: "3.11.8"
+            vfx-platform: "CY2023"
+            extra_repo: "crb"
     steps:
       - name: Display disk space
         run: |
@@ -100,6 +122,10 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Add repository as safe directory
+        run: |
+          git config --global --add safe.directory /__w/OpenRV/OpenRV
+
       - name: Install pyenv
         run: |
           curl https://pyenv.run | bash
@@ -125,17 +151,7 @@ jobs:
           echo "$(pwd)/ninja" >> $GITHUB_PATH
           ninja --version
           
-      - name: Cache CMake for Rocky Linux 8
-        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
-        id: rocky8-cmake-cache
-        with:
-          path: |
-            /opt/cmake-${{ matrix.cmake-version }}/bin/cmake
-            /usr/local/bin/cmake
-          key: ${{ matrix.image }}-cmake-${{ matrix.cmake-version }}
-          
       - name: Install CMake
-        if: steps.rocky8-cmake-cache.outputs.cache-hit != 'true'
         run: |
           curl -SL -o cmake.tar.gz https://github.com/Kitware/CMake/releases/download/v${{ matrix.cmake-version }}/cmake-${{ matrix.cmake-version }}-Linux-x86_64.tar.gz
           tar -xzf cmake.tar.gz
@@ -158,8 +174,8 @@ jobs:
           install-deps: 'false'
           modules: 'debug_info qtcharts qtdatavis3d qtlottie qtnetworkauth qtquick3d qtquicktimeline qtscript qtwebengine qtwebglplugin'
           archives: 'icu qt3d qtbase qtconnectivity qtdeclarative qtgraphicaleffects qtimageformats qtlocation qtmultimedia qtquickcontrols qtquickcontrols2 qtremoteobjects qtscxml qtsensors qtsvg qttools qttranslations qtwayland qtwebchannel qtwebsockets qtwebview qtx11extras qtxmlpatterns'
-          cache: true
-          cache-key-prefix: 'rocky-install-qt-action'
+          # Caching only save 2 minutes. Keep the cache for longer operations.
+          cache: false
           setup-python: 'false'
           tools: 'tools_qtcreator'
           set-env: 'true'
@@ -170,27 +186,29 @@ jobs:
         run: |
           python3 -m pip install --user --upgrade -r requirements.txt
 
+      # For Rocky Linuyx, we can't cache the dependencies of OpenRV like 
+      # Windows and MacOS because there is not enough room in the cache (10GB limit).
+
       - name: Configure OpenRV
         run: |
-          git config --global --add safe.directory /__w/OpenRV/OpenRV
           export QT_HOME=/__w/OpenRV/OpenRV/deps/Qt/${{ matrix.qt-version}}/gcc_64
           cmake -B _build -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DRV_DEPS_QT5_LOCATION=$QT_HOME -DRV_VFX_PLATFORM=${{ matrix.vfx-platform }}
    
       - name: Build OpenRV dependencies
         run: |
-          cmake --build _build --target dependencies --parallel=$(python -c 'import os; print(os.cpu_count())') -v
+          cmake --build _build --config ${{ matrix.build-type }} --target dependencies --parallel=$(python -c 'import os; print(os.cpu_count())') -v
 
       - name: Build OpenRV main executable
         run: |
-          cmake --build _build --target main_executable --parallel=$(python -c 'import os; print(os.cpu_count())') -v
+          cmake --build _build --config ${{ matrix.build-type }} --target main_executable --parallel=$(python -c 'import os; print(os.cpu_count())') -v
 
       - name: Tests
         run: |
-          ctest --test-dir _build -C Release --extra-verbose
+          ctest --test-dir _build -C ${{ matrix.build-type }} --extra-verbose
 
       - name: Install OpenRV
         run: |
-          cmake --install _build --prefix $(pwd)/_install --config Release
+          cmake --install _build --prefix $(pwd)/_install --config ${{ matrix.build-type }}
 
   macos:
     name: '${{ matrix.os }} ${{ matrix.arch-type }} ${{ matrix.vfx-platform }}
@@ -216,23 +234,51 @@ jobs:
             qt-version: "5.15.2"
             python-version: "3.11"
             vfx-platform: "CY2023"
+          - os: "macos-13"
+            arch-type: "x86_64"
+            build-type: "Debug"
+            qt-version: "5.15.2"
+            python-version: "3.11"
+            vfx-platform: "CY2023"
+          - os: "macos-14"
+            arch-type: "arm64"
+            build-type: "Debug"
+            qt-version: "5.15.2"
+            python-version: "3.11"
+            vfx-platform: "CY2023"
     steps:
+      - name: Display disk space
+        run: |
+          df -h /
+          
+      - name: Clear up some spaces on disk
+        run: |
+          # Remove some unused XCode (Default is XCode 15.4).
+          sudo rm -rf /Applications/Xcode_15.3.app
+          sudo rm -rf /Applications/Xcode_15.2.app
+          sudo rm -rf /Applications/Xcode_15.1.app
+          sudo rm -rf /Applications/Xcode_15.0.1.app
+          sudo rm -rf /Users/runner/Library/Android
+
+      - name: Display disk space
+        run: |
+          df -h /
+
       - name: Check out repository code
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # 4.1.7
         with:
           submodules: recursive
 
-      - name: Display repository files
+      - name: Add repository as safe directory
         run: |
-          ls -al .github
-          ls -al .github/actions
-        
+          git config --global --add safe.directory /__w/OpenRV/OpenRV
+
       - name: Prepare Qt folder
         run: |
           mkdir -p "${{ github.workspace }}/deps"
 
       - name: Install Qt ${{ matrix.qt-version }}
-        if: ${{ matrix.arch-type == 'x86_64' }}
+        if: matrix.arch-type == 'x86_64'
         uses: jurplel/install-qt-action@v4
         with:
           version: '${{ matrix.qt-version }}'
@@ -243,8 +289,8 @@ jobs:
           install-deps: 'false'
           modules: 'debug_info qtcharts qtdatavis3d qtlottie qtnetworkauth qtquick3d qtquicktimeline qtscript qtwebengine qtwebglplugin'
           archives: 'd3dcompiler_47 opengl32sw qt3d qtactiveqt qtbase qtconnectivity qtdeclarative qtgraphicaleffects qtimageformats qtlocation qtmultimedia qtquickcontrols qtquickcontrols2 qtremoteobjects qtscxml qtsensors qtsvg qttools qttranslations qtwebchannel qtwebsockets qtwebview qtwinextras qtxmlpatterns'
-          cache: true
-          cache-key-prefix: '${{ matrix.os }}-install-qt-action'
+          # Caching only save 2 minutes. Keep the cache for longer operations.
+          cache: false
           setup-python: 'false'
           tools: 'tools_qtcreator'
           set-env: 'true'
@@ -252,7 +298,7 @@ jobs:
           aqtversion: '==3.1.*'
 
       - name: Patch Qt ${{ matrix.qt-version }}
-        if: ${{ matrix.arch-type == 'x86_64' }}
+        if: matrix.arch-type == 'x86_64'
         # There is an issue with Clang15 and Qt < 5.15.15.
         run: |
           curl -o file.zip https://codereview.qt-project.org/changes/qt%2Fqtbase~503172/revisions/3/files/mkspecs%2Ffeatures%2Ftoolchain.prf/download
@@ -260,7 +306,8 @@ jobs:
           cp $(unzip -l file.zip | awk 'NR==4 {print $4}') ${{ github.workspace }}/deps/Qt/${{ matrix.qt-version }}/clang_64/mkspecs/features/toolchain.prf
 
       - name: Build Qt
-        if: ${{ matrix.arch-type == 'arm64' }}
+        if: matrix.arch-type == 'arm64'
+        id: build-qt5-for-arm64
         uses: ./.github/actions/build-qt5-for-arm64
         with:
           qt-version: "5.15.15"
@@ -268,6 +315,12 @@ jobs:
           python2-version: "2.7.18"
           xcode-version: "14.3.1"
           qt-output: "deps"
+
+      - name: Activate Python ${{ matrix.python-version }} if Qt was taken from cache
+        if: steps.build-qt5-for-arm64.outputs.qt-cache-hit == 'true'
+        uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # 5.2.0
+        with:
+          python-version: '${{ matrix.python-version }}'
 
       - name: Install Python dependencies
         run: |
@@ -278,35 +331,57 @@ jobs:
           brew install --quiet --formula cmake ninja readline sqlite3 xz zlib tcl-tk autoconf automake libtool python yasm clang-format black meson nasm pkg-config glew
 
       - name: Set QT_HOME
-        if: ${{ matrix.arch-type == 'x86_64' }}
+        if: matrix.arch-type == 'x86_64'
         run: |
           echo "QT_HOME=${{ github.workspace }}/deps/Qt/${{ matrix.qt-version }}/clang_64" >> $GITHUB_ENV
           
       - name: Set QT_HOME
-        if: ${{ matrix.arch-type == 'arm64' }}
+        if: matrix.arch-type == 'arm64'
         run: |
-          echo "QT_HOME=${{ github.workspace }}/deps
-          
+          echo "QT_HOME=${{ github.workspace }}/deps" >> $GITHUB_ENV
+
+      - name: Check if the dependencies changed
+        if: matrix.build-type == 'Release'
+        uses: dorny/paths-filter@v3
+        id: changes-in-deps
+        with:
+          filters: |
+            dependencies:
+              - 'cmake/**'
+  
+      - name: Restore some dependencies
+        # Restore only if there are no changes under cmake folder and Release build.
+        if: steps.changes-in-deps.outputs.dependencies == 'false' && matrix.build-type == 'Release'
+        id: cmake-dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ./_build/RV_DEPS_*
+            ./_build/cmake/dependencies
+            ./_build/_deps
+          key: macos-${{ matrix.arch-type }}-dependencies
+
       - name: Configure OpenRV
         run: |
           cmake -B _build -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DRV_DEPS_QT5_LOCATION=$QT_HOME -DRV_VFX_PLATFORM=${{ matrix.vfx-platform }}
    
       - name: Build OpenRV dependencies
+        if: steps.cmake-dependencies.outputs.cache-hit != 'true'
         run: |
-          cmake --build _build --target dependencies --parallel=$(python -c 'import os; print(os.cpu_count())') -v
+          cmake --build _build --config ${{ matrix.build-type }} --target dependencies --parallel=$(python -c 'import os; print(os.cpu_count())') -v
           ls -al _build
           
       - name: Build OpenRV main executable
         run: |
-          cmake --build _build --target main_executable --parallel=$(python -c 'import os; print(os.cpu_count())') -v
+          cmake --build _build --config ${{ matrix.build-type }} --target main_executable --parallel=$(python -c 'import os; print(os.cpu_count())') -v
 
       - name: Tests
         run: |
-          ctest --test-dir _build -C Release --extra-verbose
+          ctest --test-dir _build -C ${{ matrix.build-type }} --extra-verbose
 
       - name: Install OpenRV
         run: |
-          cmake --install _build --prefix $(pwd)/_install --config Release
+          cmake --install _build --prefix $(pwd)/_install --config ${{ matrix.build-type }}
 
   windows:
     name: 'Windows ${{ matrix.vfx-platform }}
@@ -325,6 +400,15 @@ jobs:
           - os: "windows-2022"
             arch-type: "x86_64"
             build-type: "Release"
+            qt-version: "5.15.2"
+            python-version: "3.11"
+            cmake-version: "3.29.8"
+            vfx-platform: "CY2023"
+            msvc-component: "14.40.17.10.x86.x64"
+            msvc-compiler: "14.40.33807"
+          - os: "windows-2022"
+            arch-type: "x86_64"
+            build-type: "Debug"
             qt-version: "5.15.2"
             python-version: "3.11"
             cmake-version: "3.29.8"
@@ -364,7 +448,8 @@ jobs:
         with:
           msystem: MINGW64
           update: true
-          cache: true
+          # False because it keep creating new cache entry.
+          cache: false
           install: >-
             mingw-w64-x86_64-autotools
             mingw-w64-x86_64-cmake
@@ -442,8 +527,8 @@ jobs:
           install-deps: 'false'
           modules: 'debug_info qtcharts qtdatavis3d qtlottie qtnetworkauth qtquick3d qtquicktimeline qtscript qtwebengine qtwebglplugin'
           archives: 'd3dcompiler_47 opengl32sw qt3d qtactiveqt qtbase qtconnectivity qtdeclarative qtgraphicaleffects qtimageformats qtlocation qtmultimedia qtquickcontrols qtquickcontrols2 qtremoteobjects qtscxml qtsensors qtsvg qttools qttranslations qtwebchannel qtwebsockets qtwebview qtwinextras qtxmlpatterns'
-          cache: true
-          cache-key-prefix: '${{ matrix.os }}-install-qt-action'
+          # Caching only save 2 minutes. Keep the cache for longer operations.
+          cache: false
           setup-python: 'false'
           tools: 'tools_qtcreator'
           set-env: 'true'
@@ -455,6 +540,26 @@ jobs:
           python3 -m pip install --user --upgrade -r ./requirements.txt
         shell: msys2 {0}
 
+      - name: Check if the dependencies changed
+        if: matrix.build-type == 'Release'
+        uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            dependencies:
+              - 'cmake/**'
+
+      - name: Restore some dependencies
+        if: matrix.build-type == 'Release'
+        id: cmake-dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ./_build/RV_DEPS_*
+            ./_build/cmake/dependencies
+            ./_build/_deps
+          key: windows-dependencies
+
       - name: Configure OpenRV
         run: |
           export QT_HOME=c:/Qt/${{ matrix.qt-version }}/msvc2019_64
@@ -462,24 +567,25 @@ jobs:
         shell: msys2 {0}
           
       - name: Build OpenRV dependencies
+        if: steps.cmake-dependencies.outputs.cache-hit != 'true'
         run: |
-          cmake --build _build --config Release --target dependencies --parallel=$(python -c 'import os; print(os.cpu_count())') -v
+          cmake --build _build --config ${{ matrix.build-type }} --target dependencies --parallel=$(python -c 'import os; print(os.cpu_count())') -v
         shell: msys2 {0}
         id: build_deps
 
       - name: Build OpenRV main executable
         run: |
-          cmake --build _build --config Release --target main_executable --parallel=$(python -c 'import os; print(os.cpu_count())') -v
+          cmake --build _build --config ${{ matrix.build-type }} --target main_executable --parallel=$(python -c 'import os; print(os.cpu_count())') -v
         shell: msys2 {0}
 
       - name: Tests
         continue-on-error: true
         run: |
           ls -al _build/stage/app/bin
-          ctest --test-dir _build -C Release --extra-verbose
+          ctest --test-dir _build -C ${{ matrix.build-type }} --extra-verbose
         shell: msys2 {0}
 
       - name: Install OpenRV
         run: |
-          cmake --install _build --prefix $(pwd)/_install --config Release
+          cmake --install _build --prefix $(pwd)/_install --config ${{ matrix.build-type }}
         shell: msys2 {0}
