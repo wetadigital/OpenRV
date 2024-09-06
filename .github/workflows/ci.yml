@@ -210,6 +210,12 @@ jobs:
             qt-version: "5.15.2"
             python-version: "3.11"
             vfx-platform: "CY2023"
+          - os: "macos-14"
+            arch-type: "arm64"
+            build-type: "Release"
+            qt-version: "5.15.2"
+            python-version: "3.11"
+            vfx-platform: "CY2023
     steps:
       - name: Check out repository code
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # 4.1.7
