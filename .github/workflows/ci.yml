@@ -230,6 +230,7 @@ jobs:
           mkdir -p "${{ github.workspace }}/deps"
 
       - name: Install Qt ${{ matrix.qt-version }}
+        if: ${{ matrix.os == 'macos-13' }}
         uses: jurplel/install-qt-action@v4
         with:
           version: '${{ matrix.qt-version }}'
@@ -249,12 +250,22 @@ jobs:
           aqtversion: '==3.1.*'
 
       - name: Patch Qt ${{ matrix.qt-version }}
+        if: ${{ matrix.os == 'macos-13' }}
         # There is an issue with Clang15 and Qt < 5.15.15.
         run: |
           curl -o file.zip https://codereview.qt-project.org/changes/qt%2Fqtbase~503172/revisions/3/files/mkspecs%2Ffeatures%2Ftoolchain.prf/download
           unzip file.zip
           cp $(unzip -l file.zip | awk 'NR==4 {print $4}') ${{ github.workspace }}/deps/Qt/${{ matrix.qt-version }}/clang_64/mkspecs/features/toolchain.prf
 
+      - name: Deploy to S
+        if: ${{ matrix.os == 'macos-14' }}
+        uses: ./.github/actions/arm64_build_qt5
+        with:
+          qt-version: "5.15.15"
+          python3-version: "3.11.9"
+          python2-version: "2.7.18"
+          xcode-version: "14.3.1"
+          
       - name: Install Python dependencies
         run: |
           python3 -m pip install --user --upgrade -r requirements.txt
