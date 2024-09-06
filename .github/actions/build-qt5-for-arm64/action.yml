@@ -13,6 +13,9 @@ inputs:
   xcode-version:
     description: 'Xcode version'
     required: true
+  qt-output:
+    description: 'qt output'
+    required: true
 runs:
   using: "composite"
   steps:
@@ -21,7 +24,7 @@ runs:
         id: arm64-qt
         with:
           path: ./qt-release
-          key: arm64-qt-${{ matrix.qt-version }}
+          key: arm64-qt-${{ inputs.qt-version }}
           
       - name: Switch to XCode 14
         if: steps.arm64-qt.outputs.cache-hit != 'true'
@@ -91,14 +94,13 @@ runs:
         if: steps.arm64-qt.outputs.cache-hit != 'true'
         run: |
           mkdir -p qt-build
-          mkdir -p qt-release
         shell: bash
 
       - name: Configure Qt ${{ inputs.qt-version }}
         if: steps.arm64-qt.outputs.cache-hit != 'true'
         run: |
           ../qt-src/configure \
-          --prefix="../qt-release" \
+          --prefix="../${{ inputs.qt-output }}" \
           -no-strip \
           -no-rpath \
           -opensource \
@@ -150,7 +152,7 @@ runs:
       - name: Display release folder and architecture
         if: steps.arm64-qt.outputs.cache-hit != 'true'
         run: |
-          ls -al ./qt-release
-          file ./qt-release/bin/qmake
+          ls -al ./${{ inputs.qt-output }}
+          file ./${{ inputs.qt-output }}/bin/qmake
         shell: bash
           
