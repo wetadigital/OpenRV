@@ -139,6 +139,5 @@ runs:
         with:
           path: ./qt-release
           key: arm64-qt-${{ matrix.qt-version }}
-        shell: bash
 
           
