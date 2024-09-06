@@ -227,21 +227,12 @@ jobs:
           ls -al .github
           ls -al .github/actions
         
-      - name: Activate Python ${{ matrix.python-version }}
-        uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # 5.2.0
-        with:
-          python-version: '${{ matrix.python-version }}'
-
-      - name: Display Python installation location
-        run: |
-          python -c "import sys; print(sys.executable)"
-
       - name: Prepare Qt folder
         run: |
           mkdir -p "${{ github.workspace }}/deps"
 
       - name: Install Qt ${{ matrix.qt-version }}
-        if: ${{ matrix.os == 'macos-13' }}
+        if: ${{ matrix.arch-type == 'x86_64' }}
         uses: jurplel/install-qt-action@v4
         with:
           version: '${{ matrix.qt-version }}'
@@ -261,7 +252,7 @@ jobs:
           aqtversion: '==3.1.*'
 
       - name: Patch Qt ${{ matrix.qt-version }}
-        if: ${{ matrix.os == 'macos-13' }}
+        if: ${{ matrix.arch-type == 'x86_64' }}
         # There is an issue with Clang15 and Qt < 5.15.15.
         run: |
           curl -o file.zip https://codereview.qt-project.org/changes/qt%2Fqtbase~503172/revisions/3/files/mkspecs%2Ffeatures%2Ftoolchain.prf/download
@@ -269,14 +260,15 @@ jobs:
           cp $(unzip -l file.zip | awk 'NR==4 {print $4}') ${{ github.workspace }}/deps/Qt/${{ matrix.qt-version }}/clang_64/mkspecs/features/toolchain.prf
 
       - name: Build Qt
-        if: ${{ matrix.os == 'macos-14' }}
+        if: ${{ matrix.arch-type == 'arm64' }}
         uses: ./.github/actions/build-qt5-for-arm64
         with:
           qt-version: "5.15.15"
           python3-version: "3.11.9"
           python2-version: "2.7.18"
           xcode-version: "14.3.1"
-          
+          qt-output: "deps"
+
       - name: Install Python dependencies
         run: |
           python3 -m pip install --user --upgrade -r requirements.txt
@@ -285,9 +277,18 @@ jobs:
         run: |
           brew install --quiet --formula cmake ninja readline sqlite3 xz zlib tcl-tk autoconf automake libtool python yasm clang-format black meson nasm pkg-config glew
 
+      - name: Set QT_HOME
+        if: ${{ matrix.arch-type == 'x86_64' }}
+        run: |
+          echo "QT_HOME=${{ github.workspace }}/deps/Qt/${{ matrix.qt-version }}/clang_64" >> $GITHUB_ENV
+          
+      - name: Set QT_HOME
+        if: ${{ matrix.arch-type == 'arm64' }}
+        run: |
+          echo "QT_HOME=${{ github.workspace }}/deps
+          
       - name: Configure OpenRV
         run: |
-          export QT_HOME=${{ github.workspace }}/deps/Qt/${{ matrix.qt-version }}/clang_64
           cmake -B _build -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DRV_DEPS_QT5_LOCATION=$QT_HOME -DRV_VFX_PLATFORM=${{ matrix.vfx-platform }}
    
       - name: Build OpenRV dependencies
