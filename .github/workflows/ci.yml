@@ -126,6 +126,13 @@ jobs:
         run: |
           git config --global --add safe.directory /__w/OpenRV/OpenRV
 
+      - name: ccache
+        if: ${{ matrix.rocky-version == '8' }} && if: ${{ matrix.build_type == 'Release' }}
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          max-size: "500M"
+          key: ${{ matrix.image }}-${{ matrix.build_type }}
+
       - name: Install pyenv
         run: |
           curl https://pyenv.run | bash
@@ -186,13 +193,13 @@ jobs:
         run: |
           python3 -m pip install --user --upgrade -r requirements.txt
 
-      # For Rocky Linuyx, we can't cache the dependencies of OpenRV like 
+      # For Rocky Linux, we can't cache the dependencies of OpenRV like 
       # Windows and MacOS because there is not enough room in the cache (10GB limit).
 
       - name: Configure OpenRV
         run: |
           export QT_HOME=/__w/OpenRV/OpenRV/deps/Qt/${{ matrix.qt-version}}/gcc_64
-          cmake -B _build -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DRV_DEPS_QT5_LOCATION=$QT_HOME -DRV_VFX_PLATFORM=${{ matrix.vfx-platform }}
+          cmake -B _build -G "Ninja" -D CMAKE_C_COMPILER_LAUNCHER=ccache -D CMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DRV_DEPS_QT5_LOCATION=$QT_HOME -DRV_VFX_PLATFORM=${{ matrix.vfx-platform }}
    
       - name: Build OpenRV dependencies
         run: |
