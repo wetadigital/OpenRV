@@ -126,13 +126,6 @@ jobs:
         run: |
           git config --global --add safe.directory /__w/OpenRV/OpenRV
 
-      - name: ccache
-        if: ${{ matrix.rocky-version == '8' }} && ${{ matrix.build_type == 'Release' }}
-        uses: hendrikmuhs/ccache-action@v1.2
-        with:
-          max-size: "500M"
-          key: ${{ matrix.image }}-${{ matrix.build_type }}
-
       - name: Install pyenv
         run: |
           curl https://pyenv.run | bash
@@ -280,6 +273,13 @@ jobs:
         run: |
           git config --global --add safe.directory /__w/OpenRV/OpenRV
 
+      - name: ccache
+        if: ${{ matrix.arch-type == 'x86_64' }} && ${{ matrix.build_type == 'Release' }}
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          max-size: "500M"
+          key: ${{ matrix.os }}-${{ matrix.build_type }}
+          
       - name: Prepare Qt folder
         run: |
           mkdir -p "${{ github.workspace }}/deps"
