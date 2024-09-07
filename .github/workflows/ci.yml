@@ -354,7 +354,7 @@ jobs:
   
       - name: Restore some dependencies
         # Restore only if there are no changes under cmake folder and Release build.
-        if: env.SKIP_DEPS_CACHE == 'true' && steps.changes-in-deps.outputs.dependencies == 'false' && matrix.build-type == 'Release'
+        if: env.SKIP_DEPS_CACHE == 'false' && steps.changes-in-deps.outputs.dependencies == 'false' && matrix.build-type == 'Release'
         id: cmake-dependencies
         uses: actions/cache@v4
         with:
@@ -553,7 +553,7 @@ jobs:
               - 'cmake/**'
 
       - name: Restore some dependencies
-        if: env.SKIP_DEPS_CACHE == 'true' && matrix.build-type == 'Release'
+        if: env.SKIP_DEPS_CACHE == 'false' && matrix.build-type == 'Release'
         id: cmake-dependencies
         uses: actions/cache@v4
         with:
