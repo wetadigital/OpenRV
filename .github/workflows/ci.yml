@@ -23,7 +23,10 @@ on:
 
   workflow_dispatch:
     # This allows manual triggering of the workflow from the web
-     
+
+env:
+  SKIP_DEPS_CACHE: 'true'
+
 jobs:
   rocky-linux:
     name: 'Rocky Linux ${{ matrix.rocky-version }} ${{ matrix.vfx-platform }}
@@ -272,13 +275,6 @@ jobs:
       - name: Add repository as safe directory
         run: |
           git config --global --add safe.directory /__w/OpenRV/OpenRV
-
-      - name: ccache
-        if: ${{ matrix.arch-type == 'x86_64' }} && ${{ matrix.build_type == 'Release' }}
-        uses: hendrikmuhs/ccache-action@v1.2
-        with:
-          max-size: "500M"
-          key: ${{ matrix.os }}-${{ matrix.build_type }}
           
       - name: Prepare Qt folder
         run: |
@@ -358,7 +354,7 @@ jobs:
   
       - name: Restore some dependencies
         # Restore only if there are no changes under cmake folder and Release build.
-        if: steps.changes-in-deps.outputs.dependencies == 'false' && matrix.build-type == 'Release'
+        if: env.SKIP_DEPS_CACHE == 'true' && steps.changes-in-deps.outputs.dependencies == 'false' && matrix.build-type == 'Release'
         id: cmake-dependencies
         uses: actions/cache@v4
         with:
@@ -370,7 +366,7 @@ jobs:
 
       - name: Configure OpenRV
         run: |
-          cmake -B _build -G "Ninja" -D CMAKE_C_COMPILER_LAUNCHER=ccache -D CMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DRV_DEPS_QT5_LOCATION=$QT_HOME -DRV_VFX_PLATFORM=${{ matrix.vfx-platform }}
+          cmake -B _build -G "Ninja" -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DRV_DEPS_QT5_LOCATION=$QT_HOME -DRV_VFX_PLATFORM=${{ matrix.vfx-platform }}
    
       - name: Build OpenRV dependencies
         if: steps.cmake-dependencies.outputs.cache-hit != 'true'
@@ -557,7 +553,7 @@ jobs:
               - 'cmake/**'
 
       - name: Restore some dependencies
-        if: matrix.build-type == 'Release'
+        if: env.SKIP_DEPS_CACHE == 'true' && matrix.build-type == 'Release'
         id: cmake-dependencies
         uses: actions/cache@v4
         with:
