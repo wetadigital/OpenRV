@@ -25,7 +25,7 @@ on:
     # This allows manual triggering of the workflow from the web
 
 env:
-  SKIP_DEPS_CACHE: 'true'
+  SKIP_DEPS_CACHE: 'false'
 
 jobs:
   rocky-linux:
