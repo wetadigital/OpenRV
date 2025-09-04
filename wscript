@@ -106,6 +106,12 @@ def configure(conf):
 
     for _ in conf.buildmatrix_make_variants("WetaVFXPlatform", filter_variants=["VP23"]):
         conf.buildmatrix_oz(area="/", limits=requirements, prefer_min=False)
+        conf.env.env["HTTPS_PROXY"] = "www-proxy.wetafx.co.nz:3128"
+        conf.env.env["HTTP_PROXY"] = "www-proxy.wetafx.co.nz:3128"
+        conf.env.env["NO_PROXY"] = "localhost,127.0.0.0/8,wetafx.co.nz"
+        conf.env.env["https_proxy"] = "www-proxy.wetafx.co.nz:3128"
+        conf.env.env["http_proxy"] = "www-proxy.wetafx.co.nz:3128"
+        conf.env.env["no_proxy"] = "localhost,127.0.0.0/8,wetafx.co.nz"
         configure_cmake_folder(
             conf,
             str(conf.path),
