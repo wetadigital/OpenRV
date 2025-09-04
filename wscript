@@ -102,6 +102,11 @@ def configure(conf):
         "git",
         # TODO: Remove version once unexp
         "pcre2-10.31-weta.1",
+        "freetype",
+        "libopengl",
+        "libglu-9.0.2",
+        "osmesa-23.2.1",
+        "python",
     ]
 
     for _ in conf.buildmatrix_make_variants("WetaVFXPlatform", filter_variants=["VP23"]):
