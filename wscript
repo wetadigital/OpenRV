@@ -107,6 +107,7 @@ def configure(conf):
         "libglu-9.0.2",
         "osmesa-23.2.1",
         "python",
+        "glew",
     ]
 
     for _ in conf.buildmatrix_make_variants("WetaVFXPlatform", filter_variants=["VP23"]):

@@ -75,11 +75,13 @@ ADD_LIBRARY(
   ${_sources}
 )
 
+find_package(glew REQUIRED)
+
 IF(RV_TARGET_LINUX)
   TARGET_LINK_LIBRARIES(
     ${_target}
     # OpenGL:GL vs. GL Usage of GL does find the 'glGenFencesNV' whereas 'OpenGL:GL' does not :-(
-    GL GLEW::GLEW
+    GL glew::glew
   )
 ENDIF()
 
