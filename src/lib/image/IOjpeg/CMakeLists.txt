@@ -23,10 +23,12 @@ TARGET_INCLUDE_DIRECTORIES(
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+FIND_PACKAGE(jpegturbo REQUIRED)
+
 TARGET_LINK_LIBRARIES(
   ${_target}
   PUBLIC TwkFB TwkUtil
-  PRIVATE exif jpeg-turbo::jpeg
+  PRIVATE exif jpegturbo::jpegturbo
 )
 
 RV_STAGE(TYPE "LIBRARY" TARGET ${_target})

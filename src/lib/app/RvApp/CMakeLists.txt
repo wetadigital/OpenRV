@@ -72,9 +72,10 @@ IF(RV_TARGET_WINDOWS)
     PRIVATE "-wd4355"
   )
 ELSE()
+  FIND_PACKAGE(bdwgc REQUIRED)
   TARGET_LINK_LIBRARIES(
     ${_target}
-    PRIVATE BDWGC::Gc
+    PRIVATE bdwgc::bdwgc
   )
 ENDIF()
 

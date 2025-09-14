@@ -35,6 +35,8 @@ FIND_LIBRARY(
   DOC "MesaGL library"
 )
 
+find_package(bdwgc REQUIRED)
+
 TARGET_LINK_LIBRARIES(
   ${_target}
   PUBLIC Mu
@@ -68,7 +70,7 @@ TARGET_LINK_LIBRARIES(
           stl_ext
           TwkMediaLibrary
           Qt::Core
-          BDWGC::Gc
+          bdwgc::bdwgc
           Qt::Gui
           Qt::Widgets
           QTBundle

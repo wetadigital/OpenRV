@@ -43,9 +43,11 @@ ELSEIF(RV_TARGET_LINUX)
     PRIVATE "-DMU_USE_READLINE"
   )
 
+  find_package(bdwgc REQUIRED)
+
   TARGET_LINK_LIBRARIES(
     ${_target}
-    PRIVATE readline BDWGC::Gc
+    PRIVATE readline bdwgc::bdwgc
   )
 ELSEIF(RV_TARGET_WINDOWS)
   TARGET_COMPILE_OPTIONS(

@@ -24,10 +24,12 @@ TARGET_INCLUDE_DIRECTORIES(
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+find_package(openimageio REQUIRED)
+
 TARGET_LINK_LIBRARIES(
   ${_target}
   PUBLIC TwkFB TwkExc
-  PRIVATE Imath::Imath oiio::oiio oiio::utils TwkUtil
+  PRIVATE Imath::Imath openimageio::openimageio TwkUtil
 )
 
 RV_STAGE(TYPE "LIBRARY" TARGET ${_target})

@@ -44,6 +44,8 @@ ENDIF()
 # PNG, TIFF and ZLIB are not needed anymore because they are used for the executables only.
 LIST(APPEND _configure_options "-DBUILD_CODEC=OFF")
 
+find_package(tiff REQUIRED)
+
 EXTERNALPROJECT_ADD(
   ${_target}
   URL ${_download_url}
@@ -54,7 +56,7 @@ EXTERNALPROJECT_ADD(
   SOURCE_DIR ${_source_dir}
   BINARY_DIR ${_build_dir}
   INSTALL_DIR ${_install_dir}
-  DEPENDS ZLIB::ZLIB Tiff::Tiff PNG::PNG
+  DEPENDS ZLIB::ZLIB tiff::tiff PNG::PNG
   CONFIGURE_COMMAND ${CMAKE_COMMAND} ${_configure_options}
   BUILD_COMMAND ${_cmake_build_command}
   INSTALL_COMMAND ${_cmake_install_command}

@@ -108,6 +108,11 @@ def configure(conf):
         "osmesa-23.2.1",
         "python",
         "glew",
+        "bdwgc-8.2.2",
+        "nasm-2.16.01",
+        "libjpegturbo-3.1.1",
+        "libopenimageio",
+        "libtiff",
     ]
 
     for _ in conf.buildmatrix_make_variants("WetaVFXPlatform", filter_variants=["VP23"]):

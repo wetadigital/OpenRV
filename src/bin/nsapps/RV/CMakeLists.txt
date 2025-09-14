@@ -37,6 +37,8 @@ TARGET_COMPILE_OPTIONS(
           -DREVISION_NUMBER=${RV_REVISION_NUMBER} -DRELEASE_DESCRIPTION=\"${RV_RELEASE_DESCRIPTION}\"
 )
 
+find_package(bdwgc REQUIRED)
+
 #
 # Platform common libraries
 TARGET_LINK_LIBRARIES(
@@ -68,7 +70,7 @@ TARGET_LINK_LIBRARIES(
           TwkUtil
           arg
           stl_ext
-          BDWGC::Gc
+          bdwgc::bdwgc
 )
 
 GET_PROPERTY(
