@@ -75,7 +75,7 @@ ADD_LIBRARY(
   ${_sources}
 )
 
-find_package(glew REQUIRED)
+FIND_PACKAGE(glew REQUIRED)
 
 IF(RV_TARGET_LINUX)
   TARGET_LINK_LIBRARIES(

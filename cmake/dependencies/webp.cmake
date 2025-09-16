@@ -51,8 +51,8 @@ GET_TARGET_PROPERTY(_png_include_dir PNG::PNG INTERFACE_INCLUDE_DIRECTORIES)
 LIST(APPEND _configure_options "-DPNG_LIBRARY=${_png_library}")
 LIST(APPEND _configure_options "-DPNG_PNG_INCLUDE_DIR=${_png_include_dir}")
 
-find_package(tiff REQUIRED)
-find_package(jpegturbo REQUIRED)
+FIND_PACKAGE(tiff REQUIRED)
+FIND_PACKAGE(jpegturbo REQUIRED)
 
 IF(RV_TARGET_WINDOWS)
   GET_TARGET_PROPERTY(_jpeg_library jpegturbo::jpegturbo IMPORTED_IMPLIB)

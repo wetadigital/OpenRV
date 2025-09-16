@@ -66,7 +66,6 @@ INCLUDE(png)
 ADD_SUBDIRECTORY(../../src/pub/lcms src/pub/lcms) # required by raw
 INCLUDE(raw) # depends on jpeg, zlib
 INCLUDE(webp)
-# src/pub: freetype: src/pub will be removed eventually, this path will needed to change.
 IF(RV_TARGET_WINDOWS)
   INCLUDE(pcre2)
 ENDIF()

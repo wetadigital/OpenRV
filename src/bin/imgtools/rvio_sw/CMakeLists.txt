@@ -35,7 +35,7 @@ FIND_LIBRARY(
   DOC "MesaGL library"
 )
 
-find_package(bdwgc REQUIRED)
+FIND_PACKAGE(bdwgc REQUIRED)
 FIND_PACKAGE(openexr REQUIRED)
 
 TARGET_LINK_LIBRARIES(

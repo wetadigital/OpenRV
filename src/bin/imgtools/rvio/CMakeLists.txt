@@ -62,8 +62,8 @@ TARGET_LINK_LIBRARIES(
 )
 
 IF(RV_TARGET_LINUX)
-  find_package(glew REQUIRED)
-  find_package(bdwgc REQUIRED)
+  FIND_PACKAGE(glew REQUIRED)
+  FIND_PACKAGE(bdwgc REQUIRED)
   TARGET_LINK_LIBRARIES(
     ${_target}
     PRIVATE Qt::Gui Qt::Widgets glew::glew bdwgc::bdwgc QTBundle
