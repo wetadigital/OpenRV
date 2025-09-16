@@ -32,10 +32,12 @@ TARGET_INCLUDE_DIRECTORIES(
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+FIND_PACKAGE(Python3 REQUIRED COMPONENTS Development)
+
 TARGET_LINK_LIBRARIES(
   ${_target}
   PUBLIC IPCore Mu MuLang TwkMovie TwkFBAux
-  PRIVATE Python::Python
+  PRIVATE Python3::Python
           IPBaseNodes
           IPMu
           MuAutoDoc

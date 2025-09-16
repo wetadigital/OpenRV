@@ -34,9 +34,11 @@ TARGET_COMPILE_OPTIONS(
   PRIVATE -DBUNDLE_MAJOR_VERSION=${RV_MAJOR_VERSION} -DBUNDLE_MINOR_VERSION=${RV_MINOR_VERSION} -DBUNDLE_REVISION_NUMBER=${RV_REVISION_NUMBER}
 )
 
+FIND_PACKAGE(Python3 REQUIRED COMPONENTS Development)
+
 TARGET_LINK_LIBRARIES(
   ${_target}
-  PRIVATE Python::Python Boost::filesystem Boost::system Qt::Core Qt::Gui Qt::Widgets
+  PRIVATE Python3::Python Boost::filesystem Boost::system Qt::Core Qt::Gui Qt::Widgets
 )
 
 IF(RV_TARGET_DARWIN)

@@ -53,12 +53,6 @@ ELSEIF(RV_VFX_PLATFORM STREQUAL CY2024)
   INCLUDE(qt6)
 ENDIF()
 
-INCLUDE(openssl) # Python3 requirement
-INCLUDE(python3)
-INCLUDE(imgui)
-INCLUDE(nanobind)
-INCLUDE(pyimgui)
-INCLUDE(pyimplot)
 INCLUDE(boost)
 INCLUDE(dav1d)
 IF(RV_TARGET_WINDOWS)
@@ -66,26 +60,19 @@ IF(RV_TARGET_WINDOWS)
 ENDIF()
 INCLUDE(imath)
 INCLUDE(zlib)
-INCLUDE(ffmpeg)
 INCLUDE(doctest)
 INCLUDE(png)
 # src/pub: lmcs: src/pub will be removed eventually, this path will needed to change.
 ADD_SUBDIRECTORY(../../src/pub/lcms src/pub/lcms) # required by raw
 INCLUDE(raw) # depends on jpeg, zlib
-INCLUDE(openjpeg) # depends on zlib, tiff, png
-INCLUDE(openjph)
 INCLUDE(webp)
-INCLUDE(openexr)
-INCLUDE(ocio)
 # src/pub: freetype: src/pub will be removed eventually, this path will needed to change.
 IF(RV_TARGET_WINDOWS)
   INCLUDE(pcre2)
 ENDIF()
-INCLUDE(yaml-cpp) # depends on OCIO
 
 INCLUDE(bmd.cmake)
 INCLUDE(spdlog)
-INCLUDE(aja.cmake)
 
 LIST(REMOVE_DUPLICATES RV_DEPS_LIST)
 SET(RV_DEPS_LIST

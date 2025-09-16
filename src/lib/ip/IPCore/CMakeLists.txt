@@ -228,6 +228,8 @@ TARGET_INCLUDE_DIRECTORIES(
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+FIND_PACKAGE(openexr REQUIRED)
+
 TARGET_LINK_LIBRARIES(
   ${_target}
   PUBLIC LUT
@@ -242,7 +244,7 @@ TARGET_LINK_LIBRARIES(
          stl_ext
          TwkGLF
   PRIVATE CDL
-          OpenEXR::OpenEXR
+          openexr::openexr
           TwkDeploy
           TwkGLText
           TwkCMS

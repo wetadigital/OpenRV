@@ -36,6 +36,7 @@ FIND_LIBRARY(
 )
 
 find_package(bdwgc REQUIRED)
+FIND_PACKAGE(openexr REQUIRED)
 
 TARGET_LINK_LIBRARIES(
   ${_target}
@@ -49,7 +50,7 @@ TARGET_LINK_LIBRARIES(
   PRIVATE RvCommon
           IOproxy
           MovieProxy
-          OpenEXR::OpenEXR
+          openexr::openexr
           PyTwkApp
           RvApp
           IPCore

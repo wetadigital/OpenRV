@@ -28,11 +28,13 @@ FIND_PACKAGE(
   REQUIRED
 )
 
+FIND_PACKAGE(openexr REQUIRED)
+
 TARGET_LINK_LIBRARIES(
   ${_target}
   PUBLIC MuTwkApp
   PRIVATE IOproxy
-          OpenEXR::OpenEXR
+          openexr::openexr
           MovieFB
           TwkFB
           MovieProcedural

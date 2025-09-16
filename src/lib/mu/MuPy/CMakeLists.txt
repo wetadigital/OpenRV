@@ -24,9 +24,11 @@ TARGET_INCLUDE_DIRECTORIES(
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+FIND_PACKAGE(Python3 REQUIRED COMPONENTS Development)
+
 TARGET_LINK_LIBRARIES(
   ${_target}
-  PUBLIC Python::Python Mu
+  PUBLIC Python3::Python Mu
   PRIVATE MuLang Imath::Imath TwkPython
 )
 

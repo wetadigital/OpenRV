@@ -77,13 +77,15 @@ IF(NOT RV_TARGET_WINDOWS)
   )
 ENDIF()
 
+FIND_PACKAGE(openexr REQUIRED)
+
 TARGET_LINK_LIBRARIES(
   ${_target}
   PRIVATE RvCommon
           IOproxy
           MovieProxy
           MovieSideCar
-          OpenEXR::OpenEXR
+          openexr::openexr
           MovieFB
           MovieProcedural
           MuGL

@@ -38,6 +38,7 @@ TARGET_COMPILE_OPTIONS(
 )
 
 find_package(bdwgc REQUIRED)
+FIND_PACKAGE(openexr REQUIRED)
 
 #
 # Platform common libraries
@@ -47,7 +48,7 @@ TARGET_LINK_LIBRARIES(
           IOproxy
           MovieProxy
           MovieSideCar
-          OpenEXR::OpenEXR
+          openexr::openexr
           MovieFB
           MovieProcedural
           Mu

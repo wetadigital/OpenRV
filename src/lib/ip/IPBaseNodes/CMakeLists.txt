@@ -82,12 +82,14 @@ TARGET_INCLUDE_DIRECTORIES(
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+FIND_PACKAGE(openexr REQUIRED)
+
 TARGET_LINK_LIBRARIES(
   ${_target}
   PUBLIC TwkApp TwkFB TwkMovie Qt::Core
   PRIVATE CDL
           IPCore
-          OpenEXR::OpenEXR
+          openexr::openexr
           TwkContainer
           TwkFBAux
           TwkMath

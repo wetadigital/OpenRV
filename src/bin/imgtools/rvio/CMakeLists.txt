@@ -28,13 +28,15 @@ TARGET_INCLUDE_DIRECTORIES(
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}
 )
 
+FIND_PACKAGE(openexr REQUIRED)
+
 TARGET_LINK_LIBRARIES(
   ${_target}
   PUBLIC Mu MuLang MuTwkApp TwkMovie TwkAudio
   PRIVATE RvCommon
           IOproxy
           MovieProxy
-          OpenEXR::OpenEXR
+          openexr::openexr
           PyTwkApp
           RvApp
           IPCore

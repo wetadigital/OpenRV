@@ -208,6 +208,9 @@ TARGET_INCLUDE_DIRECTORIES(
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+FIND_PACKAGE(imgui REQUIRED)
+FIND_PACKAGE(Python3 REQUIRED COMPONENTS Development)
+
 TARGET_LINK_LIBRARIES(
   ${_target}
   PUBLIC IPCore
@@ -228,7 +231,7 @@ TARGET_LINK_LIBRARIES(
          Qt::Widgets
          Qt::OpenGL
          ${QT6_QOPENGLWIDGET_TARGET}
-  PRIVATE Python::Python
+  PRIVATE Python3::Python
           IPBaseNodes
           ${RV_QT_MU_TARGET}
           MuPy

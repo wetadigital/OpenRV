@@ -112,7 +112,21 @@ def configure(conf):
         "nasm-2.16.01",
         "libjpegturbo-3.1.1",
         "libopenimageio",
+        "OpenColorIO",
         "libtiff",
+        "libyamlcpp",
+        # TODO: Check this is actually needed, no cmake targets use it - runtime?
+        "ftgl-2.1.3-rc5.weta.1",
+        "libopenssl",
+        "libpython",
+        "ffmpeg",
+        "openexr",
+        "pynanobind-2.8.0",
+        "imgui-1.90.5",
+        # TODO: runtime req instead?
+        "pyimgui-2.0.0",
+        "openjph-0.21.3",
+        "libaja-17.1.3",
     ]
 
     for _ in conf.buildmatrix_make_variants("WetaVFXPlatform", filter_variants=["VP23"]):
@@ -123,6 +137,14 @@ def configure(conf):
         conf.env.env["https_proxy"] = "www-proxy.wetafx.co.nz:3128"
         conf.env.env["http_proxy"] = "www-proxy.wetafx.co.nz:3128"
         conf.env.env["no_proxy"] = "localhost,127.0.0.0/8,wetafx.co.nz"
+
+        conf.env.env["WETA_aja_CMAKE_CONFIG_DIR"] = f"{conf.path}/tmp/{conf.env.BOB_ABI}"
+        conf.env.env["WETA_ffmpeg_CMAKE_CONFIG_DIR"] = f"{conf.path}/tmp/{conf.env.BOB_ABI}"
+
+        # TODO: Fix up base paks
+        conf.env.env["LIBIMGUI_TYPE"] = "header_only"
+        conf.env.env["LIBOPENEXR_LIB"] = "OpenEXR"
+
         configure_cmake_folder(
             conf,
             str(conf.path),
