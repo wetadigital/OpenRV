@@ -121,6 +121,7 @@ def configure(conf):
         "libpython",
         "ffmpeg",
         "openexr",
+        "imath",
         "pynanobind-2.8.0",
         "imgui-1.90.5",
         # TODO: runtime req instead?
@@ -145,6 +146,7 @@ def configure(conf):
         # TODO: Fix up base paks
         conf.env.env["LIBIMGUI_TYPE"] = "header_only"
         conf.env.env["LIBOPENEXR_LIB"] = "OpenEXR"
+        conf.env.env["LIBIMATH_LIB"] = "Imath"
 
         configure_cmake_folder(
             conf,
