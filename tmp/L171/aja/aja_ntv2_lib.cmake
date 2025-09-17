@@ -84,7 +84,7 @@ set_target_properties(aja::ntv2 PROPERTIES
   )
 
 # Configure aja to use linux headers
-target_compile_options(aja::ntv2 INTERFACE AJALinux=1)
+target_compile_definitions(aja::ntv2 INTERFACE AJALinux=1)
 
 # This file does not depend on other imported targets which have
 # been exported from the same project but in a separate export set.
