@@ -14,6 +14,8 @@ SET(_sources
     GLT.cpp TwkGLText.cpp defaultFont.cpp
 )
 
+FIND_PACKAGE(freetype REQUIRED)
+FIND_PACKAGE(ftgl REQUIRED)
 FIND_PACKAGE(OpenGL REQUIRED)
 
 ADD_LIBRARY(
@@ -28,7 +30,7 @@ TARGET_INCLUDE_DIRECTORIES(
 
 TARGET_LINK_LIBRARIES(
   ${_target}
-  PUBLIC FTGL TwkGLF TwkExc TwkMath
+  PUBLIC freetype ftgl::ftgl TwkGLF TwkExc TwkMath
   PRIVATE stl_ext OpenGL::GL OpenGL::GLU TwkUtil utf8
 )
 
