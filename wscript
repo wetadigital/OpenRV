@@ -129,6 +129,7 @@ def configure(conf):
         "openjph-0.21.3",
         "libaja-17.1.3",
         "libaio-0.3.112",
+        "libasound2-1.2.6.1",
     ]
 
     for _ in conf.buildmatrix_make_variants("WetaVFXPlatform", filter_variants=["VP23"]):
