@@ -63,16 +63,20 @@ if(NOT CMAKE_VERSION VERSION_LESS "3.23.0")
       FILE_SET "HEADERS"
       TYPE "HEADERS"
       BASE_DIRS
+        "/vol/apps/aja-ntv2-sdk/17.1.3/includes/libajantv2"
         "/vol/apps/aja-ntv2-sdk/17.1.3/includes/libajantv2/ajabase"
         "/vol/apps/aja-ntv2-sdk/17.1.3/includes/libajantv2/ajantv2/includes"
+        "/vol/apps/aja-ntv2-sdk/17.1.3/includes/libajantv2/ajantv2/src/lin"
       FILES ${_AJA_HEADERS}
   )
   unset(_AJA_HEADERS)
 else()
   set_property(TARGET aja::ntv2
     APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES
+      "/vol/apps/aja-ntv2-sdk/17.1.3/includes/libajantv2"
       "/vol/apps/aja-ntv2-sdk/17.1.3/includes/libajantv2/ajabase"
       "/vol/apps/aja-ntv2-sdk/17.1.3/includes/libajantv2/ajantv2/includes"
+      "/vol/apps/aja-ntv2-sdk/17.1.3/includes/libajantv2/ajantv2/src/lin"
   )
 endif()
 
