@@ -8,9 +8,9 @@
 #include <RvCommon/DiagnosticsView.h>
 
 #include <imgui.h>
-#include <imgui_impl_qt.hpp>
-#include <imgui_impl_opengl2.h>
-#include <implot/implot.h>
+#include <backends/imgui_impl_qt.hpp>
+#include <backends/imgui_impl_opengl2.h>
+#include <implot.h>
 
 #include <ImGuiPythonBridge.h>
 

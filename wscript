@@ -123,13 +123,16 @@ def configure(conf):
         "openexr",
         "imath",
         "pynanobind-2.8.0",
-        "imgui-1.90.5",
+        "imgui-1.91.9-508d0bc",
+        "imgui_node_editor-2025.03.25-dae8edc",
+        "imgui_backend_qt-2024.12.11-023345c",
         # TODO: runtime req instead?
         "pyimgui-2.0.0",
         "openjph-0.21.3",
         "libaja-17.1.3",
         "libaio-0.3.112",
         "libasound2-1.2.6.1",
+        "implot-2025.04.03-61af48e",
     ]
 
     for _ in conf.buildmatrix_make_variants("WetaVFXPlatform", filter_variants=["VP23"]):
@@ -146,6 +149,9 @@ def configure(conf):
 
         # TODO: Fix up base paks
         conf.env.env["LIBIMGUI_TYPE"] = "header_only"
+        conf.env.env["LIBIMGUI_BACKEND_QT_TYPE"] = "header_only"
+        conf.env.env["LIBIMGUI_NODE_EDITOR_TYPE"] = "header_only"
+        conf.env.env["LIBIMPLOT_TYPE"] = "header_only"
         conf.env.env["LIBOPENEXR_LIB"] = "OpenEXR"
         conf.env.env["LIBIMATH_LIB"] = "Imath"
 
