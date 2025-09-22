@@ -144,6 +144,7 @@ def configure(conf):
         conf.env.env["http_proxy"] = "www-proxy.wetafx.co.nz:3128"
         conf.env.env["no_proxy"] = "localhost,127.0.0.0/8,wetafx.co.nz"
 
+        conf.env.env["WETA_Qt5_CMAKE_CONFIG_DIR"] = f"{conf.env.QTDIR}/lib/cmake"
         conf.env.env["WETA_aja_CMAKE_CONFIG_DIR"] = f"{conf.path}/tmp/{conf.env.BOB_ABI}"
         conf.env.env["WETA_ffmpeg_CMAKE_CONFIG_DIR"] = f"{conf.path}/tmp/{conf.env.BOB_ABI}"
 
@@ -155,12 +156,18 @@ def configure(conf):
         conf.env.env["LIBOPENEXR_LIB"] = "OpenEXR"
         conf.env.env["LIBIMATH_LIB"] = "Imath"
 
+        # Configure the required executables:
+        conf.find_program("moc")
+        conf.find_program("uic")
+
         configure_cmake_folder(
             conf,
             str(conf.path),
             RV_DEPS_QT5_LOCATION=conf.env.QTDIR,
             # Disable target requirements on link to allow linking against rt and dl
             CMAKE_LINK_LIBRARIES_ONLY_TARGETS="OFF",
+            Qt5Core_MOC_EXECUTABLE=conf.env.MOC[0],
+            Qt5Widgets_UIC_EXECUTABLE=conf.env.UIC[0],
         )
 
 
