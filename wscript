@@ -126,13 +126,15 @@ def configure(conf):
         "imgui-1.91.9-508d0bc",
         "imgui_node_editor-2025.03.25-dae8edc",
         "imgui_backend_qt-2024.12.11-023345c",
+        "implot-2025.04.03-61af48e",
         # TODO: runtime req instead?
         "pyimgui-2.0.0",
         "openjph-0.21.3",
         "libaja-17.1.3",
         "libaio-0.3.112",
         "libasound2-1.2.6.1",
-        "implot-2025.04.03-61af48e",
+        "vulkansdk",
+        "libfreeglut",
     ]
 
     for _ in conf.buildmatrix_make_variants("WetaVFXPlatform", filter_variants=["VP23"]):
@@ -149,12 +151,13 @@ def configure(conf):
         conf.env.env["WETA_ffmpeg_CMAKE_CONFIG_DIR"] = f"{conf.path}/tmp/{conf.env.BOB_ABI}"
 
         # TODO: Fix up base paks
-        conf.env.env["LIBIMGUI_TYPE"] = "header_only"
-        conf.env.env["LIBIMGUI_BACKEND_QT_TYPE"] = "header_only"
+        conf.env.env["LIBIMGUI_BACKEND_QT_TYPE"] = "shared"
         conf.env.env["LIBIMGUI_NODE_EDITOR_TYPE"] = "header_only"
-        conf.env.env["LIBIMPLOT_TYPE"] = "header_only"
         conf.env.env["LIBOPENEXR_LIB"] = "OpenEXR"
         conf.env.env["LIBIMATH_LIB"] = "Imath"
+        conf.env.env["LIBFREEGLUT_LIB"] = "glut"
+        conf.env.env["LIBVULKANSDK_TYPE"] = "shared"
+        conf.env.env["LIBVULKANSDK_LIB"] = "vulkan"
 
         # Configure the required executables:
         conf.find_program("moc")

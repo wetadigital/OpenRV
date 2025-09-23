@@ -212,6 +212,9 @@ FIND_PACKAGE(imgui REQUIRED)
 FIND_PACKAGE(imgui_backend_qt REQUIRED)
 FIND_PACKAGE(imgui_node_editor REQUIRED)
 FIND_PACKAGE(implot REQUIRED)
+# Our copy of imgui also requires GLUT and Vulkan:
+FIND_PACKAGE(freeglut REQUIRED)
+FIND_PACKAGE(vulkansdk REQUIRED)
 FIND_PACKAGE(Python3 REQUIRED COMPONENTS Development)
 
 TARGET_LINK_LIBRARIES(
@@ -263,6 +266,8 @@ TARGET_LINK_LIBRARIES(
           imgui_backend_qt::imgui_backend_qt
           imgui_node_editor::imgui_node_editor
           implot::implot
+          freeglut::freeglut
+          vulkansdk::vulkansdk
 )
 
 IF(RV_TARGET_DARWIN)
