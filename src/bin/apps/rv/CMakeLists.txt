@@ -38,7 +38,7 @@ IF(RV_TARGET_WINDOWS)
   ENDIF()
 ENDIF()
 
-QT_ADD_RESOURCES(_rv_qrc rv.qrc)
+qt5_add_resources(_rv_qrc rv.qrc)
 
 ADD_EXECUTABLE(
   ${_target}

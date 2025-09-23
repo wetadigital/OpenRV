@@ -159,6 +159,7 @@ def configure(conf):
         # Configure the required executables:
         conf.find_program("moc")
         conf.find_program("uic")
+        conf.find_program("rcc")
 
         configure_cmake_folder(
             conf,
@@ -168,6 +169,7 @@ def configure(conf):
             CMAKE_LINK_LIBRARIES_ONLY_TARGETS="OFF",
             Qt5Core_MOC_EXECUTABLE=conf.env.MOC[0],
             Qt5Widgets_UIC_EXECUTABLE=conf.env.UIC[0],
+            Qt5Core_RCC_EXECUTABLE=conf.env.RCC[0],
         )
 
 
