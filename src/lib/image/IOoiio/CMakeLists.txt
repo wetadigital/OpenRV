@@ -25,12 +25,13 @@ TARGET_INCLUDE_DIRECTORIES(
 )
 
 FIND_PACKAGE(imath REQUIRED)
+FIND_PACKAGE(opencolorio REQUIRED)
 FIND_PACKAGE(openimageio REQUIRED)
 
 TARGET_LINK_LIBRARIES(
   ${_target}
-  PUBLIC TwkFB TwkExc
-  PRIVATE imath::imath openimageio::openimageio TwkUtil
+  PUBLIC TwkFB TwkExc openimageio::openimageio opencolorio::opencolorio
+  PRIVATE imath::imath TwkUtil
 )
 
 RV_STAGE(TYPE "LIBRARY" TARGET ${_target})

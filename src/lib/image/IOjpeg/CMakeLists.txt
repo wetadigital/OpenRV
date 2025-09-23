@@ -27,8 +27,8 @@ FIND_PACKAGE(jpegturbo REQUIRED)
 
 TARGET_LINK_LIBRARIES(
   ${_target}
-  PUBLIC TwkFB TwkUtil
-  PRIVATE exif jpegturbo::jpegturbo
+  PUBLIC TwkFB TwkUtil jpegturbo::jpegturbo
+  PRIVATE exif
 )
 
 RV_STAGE(TYPE "LIBRARY" TARGET ${_target})
