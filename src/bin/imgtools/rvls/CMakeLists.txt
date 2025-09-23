@@ -29,6 +29,7 @@ FIND_PACKAGE(
 )
 
 FIND_PACKAGE(openexr REQUIRED)
+FIND_PACKAGE(yamlcpp REQUIRED)
 
 TARGET_LINK_LIBRARIES(
   ${_target}
@@ -46,7 +47,7 @@ TARGET_LINK_LIBRARIES(
           arg
           stl_ext
           Boost::headers
-          yaml_cpp
+          yamlcpp::yamlcpp
           Qt::Core
           PyTwkApp
 )
