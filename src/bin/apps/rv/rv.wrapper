@@ -57,12 +57,6 @@ if ($?PULSE_RUNTIME_PATH) then
     endif
 endif
 
-if ($?QT_PLUGIN_PATH) then 
-    # commented out as requested in https://jira.wetafx.co.nz/browse/DSERV-2321
-    #echo "INFO: warning: QT_PLUGIN_PATH is set, which can cause RV to load the wrong Qt libraries/plugins.  Unsetting..."
-    unsetenv QT_PLUGIN_PATH
-endif
-
 #
 #   For unknown reasons, LANG causes problems when set to
 #   interesting values (like fr_FR.UTF-8).
