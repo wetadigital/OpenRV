@@ -98,6 +98,7 @@ def configure(conf):
         "cmake",
         "weta_cmake_provider->=2.2",
         "qt",
+        "libflex",
         # Don't use the system install of git with a pcre2 pak
         "git",
         # TODO: Remove version once unexp
