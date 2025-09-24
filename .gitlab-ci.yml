@@ -32,3 +32,9 @@ stages:
 full_build_test:
   only:
     - merge_requests
+  artifacts:
+    # Store log files under build directory
+    paths:
+      - build/*.log
+    # Always upload artifacts even when the job fails.
+    when: always
