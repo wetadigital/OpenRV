@@ -12,7 +12,7 @@
 # There's a disconnect here between these manually-specified values and the
 # variants returned by BuildMatrix, so these will need to be updated whenever
 # a new build variant is introduced.
-ABI_RANGE = "gcc-9.4.0<gcc-9.5|gcc-171<gcc-172"
+VFX_RANGE = "2023.0.6<2024"
 
 
 # -------------------------------------------------
@@ -33,19 +33,40 @@ def options(opt):
 
 def make_app_version(conf):
 
-    app_version = conf.makeLibPak(
+    app_version = conf.makePak(
         name=conf.env.WAK_APP_NAME,
         version=conf.env.WAK_APP_VERSION,
-        prefix="",  # remove "lib" prefix
-        type="static",
-        includes="${PREFIX}/%(BOB_ABI)s/include",
-        lib=conf.env.WAK_APP_NAME,
-        libpath=["${PREFIX}/%(BOB_ABI)s/lib"],
+        variables=[
+            {
+                "target": "PATH",
+                "value": "${PREFIX}/WetaVFXPlatform-%(WETA_VFXPLATFORM_ID)s/bin",
+                "action": "env_prp",
+            },
+            {
+                "target": "LD_LIBRARY_PATH",
+                "value": "${PREFIX}/WetaVFXPlatform-%(WETA_VFXPLATFORM_ID)s/lib",
+                "action": "env_prp",
+            },
+            {
+                "target": "RV_HOME",
+                "value": "${PREFIX}/WetaVFXPlatform-%(WETA_VFXPLATFORM_ID)s",
+                "action": "env_set",
+            },
+        ],
         requires={
-            "abi": {"ver_range": ABI_RANGE},
+            "imgui": {"ver_range": "1.91.9-508d0bc<1.92"},
+            "imgui_node_editor": {"ver_range": "2025.03.25-dae8edc<2026"},
+            "imgui_backend_qt": {"ver_range": "2024.12.11-023345c<2025"},
+            "implot": {"ver_range": "2025.04.03-61af48e<2026"},
+            "libtiff": {"ver_range": "|"},
+            "OpenColorIO": {"ver_range": "|"},
+            "python": {"ver_range": "|"},
+            "qt": {"ver_range": "|"},
+            "WetaVFXPlatform": {"ver_range": VFX_RANGE},
         },
         buildRequires={
-            "abi": {"ver_range": ABI_RANGE},
+            "python": {"ver_range": "|"},
+            "WetaVFXPlatform": {"ver_range": VFX_RANGE},
         },
     )
 
