@@ -121,6 +121,7 @@ def configure(conf):
         "qt",
         "bison",
         "libflex",
+        "pymeson-1.5.1",
         # Don't use the system install of git with a pcre2 pak
         "git",
         # TODO: Remove version once unexp
