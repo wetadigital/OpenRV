@@ -119,6 +119,7 @@ def configure(conf):
         "cmake",
         "weta_cmake_provider->=2.2",
         "qt",
+        "bison",
         "libflex",
         # Don't use the system install of git with a pcre2 pak
         "git",
