@@ -159,6 +159,7 @@ def configure(conf):
         "libasound2-1.2.6.1",
         "vulkansdk",
         "libfreeglut",
+        "readline-8.1.2",
     ]
 
     for _ in conf.buildmatrix_make_variants("WetaVFXPlatform", filter_variants=["VP23"]):
@@ -180,6 +181,7 @@ def configure(conf):
         conf.env.env["LIBOPENEXR_LIB"] = "OpenEXR"
         conf.env.env["LIBIMATH_LIB"] = "Imath"
         conf.env.env["LIBFREEGLUT_LIB"] = "glut"
+        conf.env.env["LIBREADLINE_TYPE"] = "header_only"
         conf.env.env["LIBVULKANSDK_TYPE"] = "shared"
         conf.env.env["LIBVULKANSDK_LIB"] = "vulkan"
 
