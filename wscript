@@ -160,6 +160,10 @@ def configure(conf):
         "vulkansdk",
         "libfreeglut",
         "readline-8.1.2",
+        # TODO: add these requires to qt pak:
+        "libsnappy-1.1.3",
+        "minizip_ng-4.0.10",
+        "libevent-2.1.12",
     ]
 
     for _ in conf.buildmatrix_make_variants("WetaVFXPlatform", filter_variants=["VP23"]):
