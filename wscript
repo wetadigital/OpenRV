@@ -166,7 +166,9 @@ def configure(conf):
         "libevent-2.1.12",
     ]
 
-    for _ in conf.buildmatrix_make_variants("WetaVFXPlatform", filter_variants=["VP23"]):
+    for _ in conf.buildmatrix_make_variants(
+        "WetaVFXPlatform", filter_variants=["VP23"]
+    ):
         conf.buildmatrix_oz(area="/", limits=requirements, prefer_min=False)
         conf.env.env["HTTPS_PROXY"] = "www-proxy.wetafx.co.nz:3128"
         conf.env.env["HTTP_PROXY"] = "www-proxy.wetafx.co.nz:3128"
@@ -176,8 +178,12 @@ def configure(conf):
         conf.env.env["no_proxy"] = "localhost,127.0.0.0/8,wetafx.co.nz"
 
         conf.env.env["WETA_Qt5_CMAKE_CONFIG_DIR"] = f"{conf.env.QTDIR}/lib/cmake"
-        conf.env.env["WETA_aja_CMAKE_CONFIG_DIR"] = f"{conf.path}/tmp/{conf.env.BOB_ABI}"
-        conf.env.env["WETA_ffmpeg_CMAKE_CONFIG_DIR"] = f"{conf.path}/tmp/{conf.env.BOB_ABI}"
+        conf.env.env["WETA_aja_CMAKE_CONFIG_DIR"] = (
+            f"{conf.path}/tmp/{conf.env.BOB_ABI}"
+        )
+        conf.env.env["WETA_ffmpeg_CMAKE_CONFIG_DIR"] = (
+            f"{conf.path}/tmp/{conf.env.BOB_ABI}"
+        )
 
         # TODO: Fix up base paks
         conf.env.env["LIBIMGUI_BACKEND_QT_TYPE"] = "shared"
@@ -221,6 +227,16 @@ def build(bld):
         bld.cmakeInstall(
             name="install",
             dependsOn=[vfx_build_task],
+        )
+
+        # Copy the required QT binaries/resources into our pak as OpenRV expects
+        # this. It is possible to edit the qt.conf files throughout this repo to
+        # point to the real QT pak instead, but in order for QT to be able to use
+        # the OpenRV plugins the plugins config will have to point at OpenRV -
+        # which hides any standard QT plugins in the QT pak itself.
+        bld(
+            rule=f"rsync -auv {bld.env.QTDIR}/lib {bld.env.QTDIR}/libexec {bld.env.QTDIR}/resources {bld.env.QTDIR}/translations {bld.env.PREFIX}",
+            always=True,
         )
 
     if bld.isRelease():
