@@ -235,6 +235,8 @@ def build(bld):
         # which hides any standard QT plugins in the QT pak itself.
         bld(
             rule=f"rsync -auv {bld.env.QTDIR}/lib {bld.env.QTDIR}/libexec {bld.env.QTDIR}/resources {bld.env.QTDIR}/translations {bld.env.PREFIX}",
+            # Depend on the build task to make sure bld.env.PREFIX exists already
+            dependsOn=[vfx_build_task],
             always=True,
         )
 
