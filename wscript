@@ -32,28 +32,10 @@ def options(opt):
 
 
 def make_app_version(conf):
-
-    app_version = conf.makePak(
-        name=conf.env.WAK_APP_NAME,
-        version=conf.env.WAK_APP_VERSION,
-        variables=[
-            {
-                "target": "PATH",
-                "value": "${PREFIX}/WetaVFXPlatform-%(WETA_VFXPLATFORM_ID)s/bin",
-                "action": "env_prp",
-            },
-            {
-                "target": "LD_LIBRARY_PATH",
-                "value": "${PREFIX}/WetaVFXPlatform-%(WETA_VFXPLATFORM_ID)s/lib",
-                "action": "env_prp",
-            },
-            {
-                "target": "RV_HOME",
-                "value": "${PREFIX}/WetaVFXPlatform-%(WETA_VFXPLATFORM_ID)s",
-                "action": "env_set",
-            },
-        ],
-        requires={
+    pak_vars = {
+        "name": conf.env.WAK_APP_NAME,
+        "version": conf.env.WAK_APP_VERSION,
+        "requires": {
             "ffmpeg": {"ver_range": "|"},
             "imgui": {"ver_range": "1.91.9-508d0bc<1.92"},
             "imgui_node_editor": {"ver_range": "2025.03.25-dae8edc<2026"},
@@ -67,13 +49,56 @@ def make_app_version(conf):
             "qt": {"ver_range": "|"},
             "WetaVFXPlatform": {"ver_range": VFX_RANGE},
         },
-        buildRequires={
+        "buildRequires": {
             "python": {"ver_range": "|"},
             "WetaVFXPlatform": {"ver_range": VFX_RANGE},
         },
+    }
+
+    app_version = conf.makePak(
+        variables=[
+            {
+                "target": "PATH",
+                "value": "${PREFIX}/flavor-opt/WetaVFXPlatform-%(WETA_VFXPLATFORM_ID)s/bin",
+                "action": "env_prp",
+            },
+            {
+                "target": "LD_LIBRARY_PATH",
+                "value": "${PREFIX}/flavor-opt/WetaVFXPlatform-%(WETA_VFXPLATFORM_ID)s/lib",
+                "action": "env_prp",
+            },
+            {
+                "target": "RV_HOME",
+                "value": "${PREFIX}/flavor-opt/WetaVFXPlatform-%(WETA_VFXPLATFORM_ID)s",
+                "action": "env_set",
+            },
+        ],
+        **pak_vars
     )
 
-    return app_version
+    app_version_dbg = conf.makePak(
+        appName=f"{conf.env.WAK_APP_NAME}_dbg",
+        variables=[
+            {
+                "target": "PATH",
+                "value": "${PREFIX}/flavor-dbg/WetaVFXPlatform-%(WETA_VFXPLATFORM_ID)s/bin",
+                "action": "env_prp",
+            },
+            {
+                "target": "LD_LIBRARY_PATH",
+                "value": "${PREFIX}/flavor-dbg/WetaVFXPlatform-%(WETA_VFXPLATFORM_ID)s/lib",
+                "action": "env_prp",
+            },
+            {
+                "target": "RV_HOME",
+                "value": "${PREFIX}/flavor-dbg/WetaVFXPlatform-%(WETA_VFXPLATFORM_ID)s",
+                "action": "env_set",
+            },
+        ],
+        **pak_vars
+    )
+
+    return app_version, app_version_dbg
 
 
 def configure_cmake_folder(conf, path, **kwargs):
@@ -166,9 +191,14 @@ def configure(conf):
         "libevent-2.1.12",
     ]
 
-    for _ in conf.buildmatrix_make_variants(
-        "WetaVFXPlatform", filter_variants=["VP23"]
+    for _ in conf.buildmatrix_make_nested_variants(
+        ["flavor", "WetaVFXPlatform"],
+        category="flavored_platform",
+        filter_variants={"WetaVFXPlatform": ["VP23"],},
     ):
+        # Use the flavor to determine the correct CMAKE_BUILD_TYPE
+        build_type = "Debug" if conf.buildmatrix_get_flavor() == "dbg" else "Release"
+
         conf.buildmatrix_oz(area="/", limits=requirements, prefer_min=False)
         conf.env.env["HTTPS_PROXY"] = "www-proxy.wetafx.co.nz:3128"
         conf.env.env["HTTP_PROXY"] = "www-proxy.wetafx.co.nz:3128"
@@ -203,6 +233,7 @@ def configure(conf):
         configure_cmake_folder(
             conf,
             str(conf.path),
+            CMAKE_BUILD_TYPE=build_type,
             RV_DEPS_QT5_LOCATION=conf.env.QTDIR,
             # Disable target requirements on link to allow linking against rt and dl
             CMAKE_LINK_LIBRARIES_ONLY_TARGETS="OFF",
@@ -219,7 +250,7 @@ def configure(conf):
 
 def build(bld):
 
-    for _ in bld.iterVariants(category="WetaVFXPlatform"):
+    for _ in bld.iterVariants(category="flavored_platform"):
         vfx_build_task = bld.cmakeBuild(
             name="build",
         )
