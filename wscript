@@ -179,10 +179,6 @@ def configure(conf):
         "readline",
         "vulkansdk",
         "weta_cmake_provider->=2.2",
-        # Don't use the system install of git with a pcre2 pak
-        "git",
-        # TODO: Remove version once unexp
-        "pcre2-10.31-weta.1",
         # TODO: libaja 17.5 seems to introduce issues, validate
         "libaja->17.1<17.5",
         # TODO: add these requires to qt pak:
