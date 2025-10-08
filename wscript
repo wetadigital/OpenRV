@@ -36,6 +36,7 @@ def make_app_version(conf):
         "name": conf.env.WAK_APP_NAME,
         "version": conf.env.WAK_APP_VERSION,
         "requires": {
+            "boost": {"ver_range": "|"},
             "ffmpeg": {"ver_range": "|"},
             "imgui": {"ver_range": "1.91.9-508d0bc<1.92"},
             "imgui_node_editor": {"ver_range": "2025.03.25-dae8edc<2026"},
