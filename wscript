@@ -185,6 +185,10 @@ def configure(conf):
         "libsnappy-1.1.3",
         "minizip_ng-4.0.10",
         "libevent-2.1.12",
+        # TODO: remove these as ffmpeg8 should bring them in as part of build requires:
+        "libvpx",
+        "libx265",
+        "x264",
     ]
 
     for _ in conf.buildmatrix_make_nested_variants(
