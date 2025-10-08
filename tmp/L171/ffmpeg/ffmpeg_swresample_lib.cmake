@@ -50,26 +50,26 @@ unset(_cmake_expected_targets)
 add_library(ffmpeg::swresample SHARED IMPORTED)
 
 set_target_properties(ffmpeg::swresample PROPERTIES
-  INTERFACE_INCLUDE_DIRECTORIES "/vol/apps/ffmpeg/7.1.0-weta.1/gcc-171/include"
+  INTERFACE_INCLUDE_DIRECTORIES "$ENV{LIBFFMPEG_INCLUDES}"
 )
 
 if(NOT CMAKE_VERSION VERSION_LESS "3.23.0")
   file(GLOB
     _FFMPEG_HEADERS
-    "/vol/apps/ffmpeg/7.1.0-weta.1/gcc-171/libswresample/*.h"
+    "$ENV{LIBFFMPEG_INCLUDES}/libswresample/*.h"
   )
   target_sources(ffmpeg::swresample
     INTERFACE
       FILE_SET "HEADERS"
       TYPE "HEADERS"
-      BASE_DIRS "/vol/apps/ffmpeg/7.1.0-weta.1/gcc-171/include"
+      BASE_DIRS "$ENV{LIBFFMPEG_INCLUDES}"
       FILES ${_FFMPEG_HEADERS}
   )
   unset(_FFMPEG_HEADERS)
 else()
   set_property(TARGET ffmpeg::swresample
     APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES
-      "/vol/apps/ffmpeg/7.1.0-weta.1/gcc-171/include"
+      "$ENV{LIBFFMPEG_INCLUDES}"
   )
 endif()
 
@@ -77,7 +77,7 @@ endif()
 set_property(TARGET ffmpeg::swresample APPEND PROPERTY IMPORTED_CONFIGURATIONS NOCONFIG)
 set_target_properties(ffmpeg::swresample PROPERTIES
   IMPORTED_LINK_INTERFACE_LANGUAGES_NOCONFIG "CXX"
-  IMPORTED_LOCATION_NOCONFIG "/vol/apps/ffmpeg/7.1.0-weta.1/gcc-171/lib/libswresample.so"
+  IMPORTED_LOCATION_NOCONFIG "$ENV{LIBFFMPEG_LIBPATH}/libswresample.so"
   )
 
 # This file does not depend on other imported targets which have
