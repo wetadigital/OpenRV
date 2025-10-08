@@ -30,6 +30,13 @@ TARGET_LINK_LIBRARIES(
   PUBLIC Python3::Python
 )
 
+# WETA: rpath libpython directly to avoid picking up the system install
+SET_TARGET_PROPERTIES(
+  ${_target} PROPERTIES
+  SKIP_INSTALL_RPATH FALSE
+  INSTALL_RPATH "${Python3_LIBRARY_DIRS}"
+)
+
 IF(RV_TARGET_DARWIN)
   TARGET_COMPILE_OPTIONS(
     ${_target}

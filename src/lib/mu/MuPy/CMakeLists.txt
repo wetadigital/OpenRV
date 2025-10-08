@@ -33,4 +33,11 @@ TARGET_LINK_LIBRARIES(
   PRIVATE MuLang imath::imath TwkPython
 )
 
+# WETA: rpath libpython directly to avoid picking up the system install
+SET_TARGET_PROPERTIES(
+  ${_target} PROPERTIES
+  SKIP_INSTALL_RPATH FALSE
+  INSTALL_RPATH "${Python3_LIBRARY_DIRS}"
+)
+
 RV_STAGE(TYPE "LIBRARY" TARGET ${_target})

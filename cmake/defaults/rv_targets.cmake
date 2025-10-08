@@ -5,7 +5,7 @@
 #
 
 SET(CMAKE_SKIP_RPATH
-    ON
+  OFF
 )
 
 IF(APPLE)
