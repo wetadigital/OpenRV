@@ -62,6 +62,8 @@ TARGET_INCLUDE_DIRECTORIES(
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+FIND_PACKAGE(Boost REQUIRED COMPONENTS program_options thread)
+
 TARGET_LINK_LIBRARIES(
   ${_target}
   PRIVATE NDI_SDK::NDI_SDK Boost::program_options Boost::thread TwkApp TwkGLF TwkUtil

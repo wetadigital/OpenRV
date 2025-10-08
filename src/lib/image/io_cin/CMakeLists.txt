@@ -24,6 +24,8 @@ SET_TARGET_PROPERTIES(
   PROPERTIES PREFIX ""
 )
 
+FIND_PACKAGE(Boost REQUIRED COMPONENTS program_options)
+
 TARGET_LINK_LIBRARIES(
   ${_target}
   PRIVATE IOcin Boost::program_options

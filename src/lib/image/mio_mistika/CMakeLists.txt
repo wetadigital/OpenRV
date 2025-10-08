@@ -19,6 +19,8 @@ ADD_LIBRARY(
   ${_sources}
 )
 
+FIND_PACKAGE(Boost REQUIRED COMPONENTS program_options)
+
 TARGET_LINK_LIBRARIES(
   ${_target}
   PRIVATE MovieMistika Boost::program_options
