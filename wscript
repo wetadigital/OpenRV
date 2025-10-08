@@ -236,6 +236,7 @@ def configure(conf):
             Qt5Core_MOC_EXECUTABLE=conf.env.MOC[0],
             Qt5Widgets_UIC_EXECUTABLE=conf.env.UIC[0],
             Qt5Core_RCC_EXECUTABLE=conf.env.RCC[0],
+            RV_FFMPEG_NON_FREE_DECODERS_TO_ENABLE="hevc;aac;mpeg2video;prores;dnxhd",
         )
 
 
