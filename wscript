@@ -187,6 +187,7 @@ def configure(conf):
         "minizip_ng-4.0.10",
         "libevent-2.1.12",
         # TODO: remove these as ffmpeg8 should bring them in as part of build requires:
+        "libva",
         "libvpx",
         "libx265",
         "x264",
