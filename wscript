@@ -37,7 +37,7 @@ def make_app_version(conf):
         "version": conf.env.WAK_APP_VERSION,
         "requires": {
             "boost": {"ver_range": "|"},
-            "ffmpeg": {"ver_range": "|"},
+            "ffmpeg": {"ver_range": ">=8.0.0"},
             "imgui": {"ver_range": "1.91.9-508d0bc<1.92"},
             "imgui_node_editor": {"ver_range": "2025.03.25-dae8edc<2026"},
             "imgui_backend_qt": {"ver_range": "2024.12.11-023345c<2025"},
@@ -147,7 +147,7 @@ def configure(conf):
         "bdwgc",
         "bison",
         "cmake",
-        "ffmpeg-8.0.0",
+        "ffmpeg->=8.0.0<9",
         "freetype",
         "ftgl",
         "gcc",  # Constrained by the ABI variant
@@ -209,12 +209,6 @@ def configure(conf):
         conf.env.env["no_proxy"] = "localhost,127.0.0.0/8,wetafx.co.nz"
 
         conf.env.env["WETA_Qt5_CMAKE_CONFIG_DIR"] = f"{conf.env.QTDIR}/lib/cmake"
-        conf.env.env["WETA_aja_CMAKE_CONFIG_DIR"] = (
-            f"{conf.path}/tmp/{conf.env.BOB_ABI}"
-        )
-        conf.env.env["WETA_ffmpeg_CMAKE_CONFIG_DIR"] = (
-            f"{conf.path}/tmp/{conf.env.BOB_ABI}"
-        )
 
         # TODO: Fix up base paks
         conf.env.env["LIBIMGUI_BACKEND_QT_TYPE"] = "shared"
