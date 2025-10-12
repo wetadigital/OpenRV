@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 "Build definition and execution"
 
+import os
+
 
 # -------------------------------------------------
 # Globals
@@ -250,9 +252,18 @@ def build(bld):
             name="build",
         )
 
-        bld.cmakeInstall(
+        vfx_install_task = bld.cmakeInstall(
             name="install",
             dependsOn=[vfx_build_task],
+        )
+
+        # Install rv packages manually as these aren't installed by cmake:
+        bld(
+            rule=f"mkdir -p {bld.env.PREFIX}/plugins/Packages && cp {os.path.join('build', bld.env.WAK_VARIANT_FOLDER, '*', 'stage', 'packages', '*.rvpkg')} {bld.env.PREFIX}/plugins/Packages",
+            # Depend on the install task to make sure bld.env.PREFIX exists already
+            dependsOn=[vfx_install_task],
+            cwd=bld.path,
+            always=True,
         )
 
         # Copy the required QT binaries/resources into our pak as OpenRV expects
