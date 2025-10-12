@@ -1,13 +1,11 @@
-Welcome to the Wētā FX internal readme for OpenRV
-===================================================
+# Welcome to the Wētā FX internal readme for OpenRV
 
 This repo is activly synced from [The ASWF upstream (external)](https://github.com/AcademySoftwareFoundation/OpenRV). 
 It is also possible to push changes to the [Wētā FX external fork](https://github.com/wetadigital/OpenRV), allowing 
 for contributions to flow back to the ASFW repo (via Pull Request).
 
 
-Legalities
-----------
+## Legalities
 
 While not all commits to this repo will be committed back to the opensource community, it is easier if we assume that they are.
 This makes it easier to push commits at a later date if we do decide to contribute them etc.
@@ -41,18 +39,18 @@ added in accordance with the upstream project policies. Something like the follo
 // SPDX-License-Identifier: Apache-2.0
 ```
 
-Contributing
-------------
+
+## Contributing
 
 Make sure to read the OSS [Contributing Guidelines](CONTRIBUTING.md)
 
-Namespacing
------------
+
+## Namespacing
 
 All git tags and branches created internally should be prefixed with `weta/`. This avoids collisions with upstream refs.
 
-Workflow
---------
+
+## Workflow
 
 As we have changes that are internal only, we have a `weta/main` branch. This 
 functions like the `main` branch would in any other repo, but will be updated with the upstream from time to time.
@@ -69,14 +67,12 @@ At the moment, only repo maintainers can merge into the first 3 branch types. We
 To make a change, make a `weta/user/$USERNAME/$BRANCHNAME` branch off either `weta/main` (most common) or `weta/RB-X.Y.Z` (To patch a specific release).
 
 
-Local Merges
-------------
+## Local Merges
 
 Once your changes have been made, you can merge these back into the weta internal branches like normal. That is, you can push up an MR, have it reviwed and merged!
 
 
-Pushing Changes to Upstream
----------------------------
+## Pushing Changes to Upstream
 
 If your change should be contributed back to the ASWF repo, then flag that in your Merge request. A maintainer will need to cherry-pick those changes into a `weta/public/$BRANCHNAME`
 that is based off of main, so they can sync to the [Wētā FX external fork](https://github.com/wetadigital/OpenRV).
@@ -87,15 +83,44 @@ the dev who did the work. This will require you to have a gitlab account with yo
 If you do not have one setup, a maintainer _might_ do it for you if you ask nicely!
 
 
-How to build & compile
-----------------------
+## How to build & compile
 
-This is a bare bones repo at this point, and will be updated with a weta build/release soon.
+Set-up development environment:
+```bash
+source build.env
+```
+
+To create a developer build of this project:
+```bash
+waf configure
+waf
+```
 
 
-How to release
---------------
+## Deploying
 
-See above
-     
+Deploys are done via gitlab CI. To trigger a release, a git tag needs to be created, named with the app version you want
+to create. You can do this via the Gitlab UI interface (easier) or the command line.
 
+This tag should look something like: `weta/openrv-X.Y.Z`, where `X.Y.Z` is the new version.
+
+
+### Test Paks
+
+Tags with non semver app versions will deploy a test pak.
+
+For example, to deploy a test version `HAB-1234_test_fixes`, push up a git tag `weta/openrv-HAB-1234_test_fixes`.
+
+
+### Releasing
+
+Tags with semver app versions will run a full release.
+
+For example, to release version `1.2.3`, push up a git tag `weta/openrv-1.2.3`.
+
+
+## Unexperimentalising and Blessing
+
+To remove the experimental status from a pak, edit the pak in https://ozguard.wetafx.co.nz.
+
+There is currently no blessing protocol.
