@@ -37,7 +37,7 @@ def make_app_version(conf):
         "version": conf.env.WAK_APP_VERSION,
         "requires": {
             "boost": {"ver_range": "|"},
-            "ffmpeg": {"ver_range": ">=8.0.0"},
+            "ffmpeg": {"ver_range": ">=8.0.0-weta.1"},
             "imgui": {"ver_range": "1.91.9-508d0bc<1.92"},
             "imgui_node_editor": {"ver_range": "2025.03.25-dae8edc<2026"},
             "imgui_backend_qt": {"ver_range": "2024.12.11-023345c<2025"},
@@ -147,7 +147,7 @@ def configure(conf):
         "bdwgc",
         "bison",
         "cmake",
-        "ffmpeg-8.0.0-weta.1",
+        "ffmpeg->=8.0.0-weta.1<9",
         "freetype",
         "ftgl",
         "gcc",  # Constrained by the ABI variant
