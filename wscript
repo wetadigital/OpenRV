@@ -52,6 +52,7 @@ def make_app_version(conf):
             "pyrequests": {"ver_range": "|"},
             "python": {"ver_range": "|"},
             "pyside": {"ver_range": "|"},
+            "pysix": {"ver_range": "|"},
             "qt": {"ver_range": "|"},
             "WetaVFXPlatform": {"ver_range": VFX_RANGE},
         },
