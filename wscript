@@ -49,6 +49,7 @@ def make_app_version(conf):
             "pyimgui": {"ver_range": "|"},
             "pynanobind": {"ver_range": "|"},
             "python": {"ver_range": "|"},
+            "pyside": {"ver_range": "|"},
             "qt": {"ver_range": "|"},
             "WetaVFXPlatform": {"ver_range": VFX_RANGE},
         },
@@ -71,6 +72,11 @@ def make_app_version(conf):
                 "action": "env_prp",
             },
             {
+                "target": "PYTHONPATH",
+                "value": "${PREFIX}/flavor-dbg/WetaVFXPlatform-%(WETA_VFXPLATFORM_ID)s/plugins/Python",
+                "action": "env_prp",
+            },
+            {
                 "target": "RV_HOME",
                 "value": "${PREFIX}/flavor-opt/WetaVFXPlatform-%(WETA_VFXPLATFORM_ID)s",
                 "action": "env_set",
@@ -90,6 +96,11 @@ def make_app_version(conf):
             {
                 "target": "LD_LIBRARY_PATH",
                 "value": "${PREFIX}/flavor-dbg/WetaVFXPlatform-%(WETA_VFXPLATFORM_ID)s/lib",
+                "action": "env_prp",
+            },
+            {
+                "target": "PYTHONPATH",
+                "value": "${PREFIX}/flavor-dbg/WetaVFXPlatform-%(WETA_VFXPLATFORM_ID)s/plugins/Python",
                 "action": "env_prp",
             },
             {
