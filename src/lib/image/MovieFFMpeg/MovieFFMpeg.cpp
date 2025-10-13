@@ -1404,6 +1404,11 @@ namespace TwkMovie
             }
         }
 
+	// Tell ffmpeg to export custom "udta" metadata tags.
+	// Note that this currently requires at least ffmpeg-8.0
+        // otherwise these tags all come through as empty.
+	av_dict_set_int(&fmtOptions, "export_all", 1, 0);
+
         // Open the file
         const int ret = avformat_open_input(&m_avFormatContext,
                                             safe_path.c_str(), 0, &fmtOptions);
