@@ -39,7 +39,7 @@ else
 endif
 
 # Detect if VFX2023 (OpenSSL 1.1.1) or VFX2024+ (OpenSSL (3+).
-set python_version = `$RV_HOME/bin/python -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")'`
+set python_version = `python -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")'`
 set minor_version = `echo $python_version | cut -d. -f2`
 
 set is_python_vfx2023 = 0 # VFX2023 Python 3.10

@@ -37,6 +37,9 @@ TARGET_COMPILE_OPTIONS(
           -DREVISION_NUMBER=${RV_REVISION_NUMBER} -DRELEASE_DESCRIPTION=\"${RV_RELEASE_DESCRIPTION}\"
 )
 
+FIND_PACKAGE(bdwgc REQUIRED)
+FIND_PACKAGE(openexr REQUIRED)
+
 #
 # Platform common libraries
 TARGET_LINK_LIBRARIES(
@@ -45,7 +48,7 @@ TARGET_LINK_LIBRARIES(
           IOproxy
           MovieProxy
           MovieSideCar
-          OpenEXR::OpenEXR
+          openexr::openexr
           MovieFB
           MovieProcedural
           Mu
@@ -68,7 +71,7 @@ TARGET_LINK_LIBRARIES(
           TwkUtil
           arg
           stl_ext
-          BDWGC::Gc
+          bdwgc::bdwgc
 )
 
 GET_PROPERTY(

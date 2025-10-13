@@ -24,10 +24,12 @@ TARGET_INCLUDE_DIRECTORIES(
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+FIND_PACKAGE(imath REQUIRED)
+
 TARGET_LINK_LIBRARIES(
   ${_target}
   PUBLIC TwkFB TwkUtil
-  PRIVATE Gto Imath::Imath stl_ext
+  PRIVATE Gto imath::imath stl_ext
 )
 
 IF(RV_TARGET_DARWIN)

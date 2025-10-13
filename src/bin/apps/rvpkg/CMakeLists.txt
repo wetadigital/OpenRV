@@ -70,19 +70,3 @@ TARGET_COMPILE_OPTIONS(
 )
 
 RV_STAGE(TYPE "EXECUTABLE" TARGET ${_target})
-
-ADD_CUSTOM_COMMAND(
-  COMMENT "Installing ${RV_UI_APPLICATION_NAME} Packages"
-  OUTPUT ${RV_STAGE_PLUGINS_PACKAGES_DIR}/rvinstall
-  COMMAND ${RV_DEPS_PYTHON3_EXECUTABLE} ${PROJECT_SOURCE_DIR}/src/build/install_all_rvpkg.py --rvpkg $<TARGET_FILE:${_target}> --destination
-          ${RV_STAGE_PLUGINS_DIR} --source ${RV_PACKAGES_DIR}
-  WORKING_DIRECTORY ${RV_STAGE_BIN_DIR}
-  DEPENDS ${_target} packages ${RV_PACKAGE_LIST}
-)
-
-ADD_CUSTOM_TARGET(
-  rvinstall ALL
-  DEPENDS ${RV_STAGE_PLUGINS_PACKAGES_DIR}/rvinstall
-)
-
-ADD_DEPENDENCIES(installed_packages rvinstall)

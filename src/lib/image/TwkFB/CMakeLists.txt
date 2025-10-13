@@ -42,9 +42,11 @@ IF(RV_TARGET_WINDOWS)
   )
 ENDIF()
 
+FIND_PACKAGE(openexr REQUIRED)
+
 TARGET_LINK_LIBRARIES(
   ${_target}
-  PUBLIC TwkExc TwkMath TwkUtil OpenEXR::OpenEXR
+  PUBLIC TwkExc TwkMath TwkUtil openexr::openexr
   PRIVATE RVMath stl_ext lcms ${CMAKE_DL_LIBS}
 )
 

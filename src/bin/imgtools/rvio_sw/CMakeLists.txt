@@ -35,6 +35,9 @@ FIND_LIBRARY(
   DOC "MesaGL library"
 )
 
+FIND_PACKAGE(bdwgc REQUIRED)
+FIND_PACKAGE(openexr REQUIRED)
+
 TARGET_LINK_LIBRARIES(
   ${_target}
   PUBLIC Mu
@@ -47,7 +50,7 @@ TARGET_LINK_LIBRARIES(
   PRIVATE RvCommon
           IOproxy
           MovieProxy
-          OpenEXR::OpenEXR
+          openexr::openexr
           PyTwkApp
           RvApp
           IPCore
@@ -68,7 +71,7 @@ TARGET_LINK_LIBRARIES(
           stl_ext
           TwkMediaLibrary
           Qt::Core
-          BDWGC::Gc
+          bdwgc::bdwgc
           Qt::Gui
           Qt::Widgets
           QTBundle

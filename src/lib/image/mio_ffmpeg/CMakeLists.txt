@@ -25,6 +25,8 @@ IF(RV_BUILD_MIO_FFMPEG)
     ${_sources}
   )
 
+FIND_PACKAGE(Boost REQUIRED COMPONENTS program_options)
+
   TARGET_LINK_LIBRARIES(
     ${_target}
     PRIVATE MovieFFMpeg Boost::program_options TwkFB

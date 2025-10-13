@@ -58,6 +58,7 @@ namespace TwkMovie
         m_status = Status::PENDING;
         m_request = request;
         m_priority = false;
+        m_movieReader = nullptr;
     }
 
     void GenericIO::Preloader::Reader::clearFilename()

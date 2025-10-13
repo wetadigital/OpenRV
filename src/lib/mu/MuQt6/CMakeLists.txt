@@ -377,9 +377,10 @@ IF(RV_TARGET_WINDOWS)
     PUBLIC gc
   )
 ELSE()
+  FIND_PACKAGE(bdwgc REQUIRED)
   TARGET_LINK_LIBRARIES(
     ${_target}
-    PUBLIC BDWGC::Gc
+    PUBLIC bdwgc::bdwgc
   )
 ENDIF()
 

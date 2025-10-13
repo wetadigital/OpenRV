@@ -21,10 +21,12 @@ TARGET_INCLUDE_DIRECTORIES(
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+FIND_PACKAGE(tiff REQUIRED)
+
 TARGET_LINK_LIBRARIES(
   ${_target}
   PUBLIC TwkMath TwkExc
-  PRIVATE Tiff::Tiff stl_ext
+  PRIVATE tiff::tiff stl_ext
 )
 
 RV_STAGE(TYPE "LIBRARY" TARGET ${_target})

@@ -22,6 +22,10 @@ TARGET_INCLUDE_DIRECTORIES(
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+FIND_PACKAGE(Boost REQUIRED COMPONENTS filesystem)
+FIND_PACKAGE(ffmpeg REQUIRED COMPONENTS avcodec avformat swscale)
+FIND_PACKAGE(openjph REQUIRED)
+
 TARGET_LINK_LIBRARIES(
   ${_target}
   PUBLIC TwkMovie ffmpeg::avutil
@@ -33,7 +37,7 @@ TARGET_LINK_LIBRARIES(
           ffmpeg::avcodec
           ffmpeg::avformat
           ffmpeg::swscale
-          OpenJph::OpenJph
+          openjph
 )
 
 IF(RV_FFMPEG_USE_VIDEOTOOLBOX)

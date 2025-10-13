@@ -30,6 +30,8 @@ TARGET_INCLUDE_DIRECTORIES(
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+FIND_PACKAGE(Boost REQUIRED COMPONENTS date_time filesystem program_options thread)
+
 TARGET_LINK_LIBRARIES(
   ${_target}
   PUBLIC Qt::Core TwkMovie Boost::thread

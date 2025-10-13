@@ -38,7 +38,7 @@ IF(RV_TARGET_WINDOWS)
   ENDIF()
 ENDIF()
 
-QT_ADD_RESOURCES(_rv_qrc rv.qrc)
+qt5_add_resources(_rv_qrc rv.qrc)
 
 ADD_EXECUTABLE(
   ${_target}
@@ -77,13 +77,15 @@ IF(NOT RV_TARGET_WINDOWS)
   )
 ENDIF()
 
+FIND_PACKAGE(openexr REQUIRED)
+
 TARGET_LINK_LIBRARIES(
   ${_target}
   PRIVATE RvCommon
           IOproxy
           MovieProxy
           MovieSideCar
-          OpenEXR::OpenEXR
+          openexr::openexr
           MovieFB
           MovieProcedural
           MuGL

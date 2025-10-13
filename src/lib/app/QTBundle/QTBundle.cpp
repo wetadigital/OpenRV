@@ -89,11 +89,6 @@ namespace TwkApp
         m_pyhome = m_root;
         m_pyhome.cd("lib");
         m_pyhome.cd("python" PYTHON_VERSION);
-        bool setPythonHome =
-            !(getenv("PYTHONHOME") && getenv("RV_ALLOW_SITE_PYTHONHOME"));
-        if (setPythonHome)
-            setEnvVar("PYTHONHOME", m_root.absolutePath().toUtf8().constData(),
-                      true);
 
         bool forceToFront = (!getenv("RV_PYTHONPATH_APPEND_ONLY"));
 
