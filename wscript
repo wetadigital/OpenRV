@@ -38,22 +38,22 @@ def make_app_version(conf):
         "name": conf.env.WAK_APP_NAME,
         "version": conf.env.WAK_APP_VERSION,
         "requires": {
-            "boost": {"ver_range": "|"},
+            "boost": {"ver_range": "|"},  # Constrained by the VFX variant
             "ffmpeg": {"ver_range": ">=8.0.0-weta.1"},
             "imgui": {"ver_range": "1.91.9-508d0bc<1.92"},
             "imgui_node_editor": {"ver_range": "2025.03.25-dae8edc<2026"},
             "imgui_backend_qt": {"ver_range": "2024.12.11-023345c<2025"},
             "implot": {"ver_range": "2025.04.03-61af48e<2026"},
-            "libtiff": {"ver_range": "|"},
-            "OpenColorIO": {"ver_range": "|"},
-            "pyimgui": {"ver_range": "|"},
-            "pyopentimelineio": {"ver_range": "|"},
-            "pynanobind": {"ver_range": "|"},
-            "pyrequests": {"ver_range": "|"},
-            "python": {"ver_range": "|"},
-            "pyside": {"ver_range": "|"},
-            "pysix": {"ver_range": "|"},
-            "qt": {"ver_range": "|"},
+            "libtiff": {"ver_range": "|"},  # Constrained by the VFX variant
+            "OpenColorIO": {"ver_range": "|"},  # Constrained by the VFX variant
+            "pyimgui": {"ver_range": "|"},  # Constrained by the python variant
+            "pyopentimelineio": {"ver_range": "|"},  # Constrained by the python variant
+            "pynanobind": {"ver_range": "|"},  # Constrained by the python variant
+            "pyrequests": {"ver_range": "|"},  # Constrained by the python variant
+            "python": {"ver_range": "|"},  # Constrained by the VFX variant
+            "pyside": {"ver_range": "|"},  # Constrained by the VFX variant
+            "pysix": {"ver_range": "|"},  # Constrained by the python variant
+            "qt": {"ver_range": "|"},  # Constrained by the VFX variant
             "WetaVFXPlatform": {"ver_range": VFX_RANGE},
         },
         "buildRequires": {
