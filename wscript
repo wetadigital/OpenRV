@@ -263,6 +263,8 @@ def configure(conf):
 
 def build(bld):
 
+    install_tasks = []
+
     for _ in bld.iterVariants(category="flavored_platform"):
         vfx_build_task = bld.cmakeBuild(
             name="build",
@@ -272,6 +274,7 @@ def build(bld):
             name="install",
             dependsOn=[vfx_build_task],
         )
+        install_tasks.append(vfx_install_task)
 
         # Install rv packages manually as these aren't installed by cmake:
         bld(
@@ -293,6 +296,19 @@ def build(bld):
             dependsOn=[vfx_build_task],
             always=True,
         )
+
+    version_check_options = {
+        "check_undeclared_python_requirements": {
+            # pymu is injected by us here: src/lib/app/PyTwkApp/PyInterface.cpp
+            "ignore_modules": ["pymu"]
+        }
+    }
+
+    bld.runOzPerVersionChecks(
+        dependsOn=install_tasks,
+        description="Run pak level sanity checks",
+        options=version_check_options,
+    )
 
     if bld.isRelease():
         bld.setOzAppDetails(
