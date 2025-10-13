@@ -38,18 +38,22 @@ def make_app_version(conf):
         "name": conf.env.WAK_APP_NAME,
         "version": conf.env.WAK_APP_VERSION,
         "requires": {
-            "boost": {"ver_range": "|"},
+            "boost": {"ver_range": "|"},  # Constrained by the VFX variant
             "ffmpeg": {"ver_range": ">=8.0.0-weta.1"},
             "imgui": {"ver_range": "1.91.9-508d0bc<1.92"},
             "imgui_node_editor": {"ver_range": "2025.03.25-dae8edc<2026"},
             "imgui_backend_qt": {"ver_range": "2024.12.11-023345c<2025"},
             "implot": {"ver_range": "2025.04.03-61af48e<2026"},
-            "libtiff": {"ver_range": "|"},
-            "OpenColorIO": {"ver_range": "|"},
-            "pyimgui": {"ver_range": "|"},
-            "pynanobind": {"ver_range": "|"},
-            "python": {"ver_range": "|"},
-            "qt": {"ver_range": "|"},
+            "libtiff": {"ver_range": "|"},  # Constrained by the VFX variant
+            "OpenColorIO": {"ver_range": "|"},  # Constrained by the VFX variant
+            "pyimgui": {"ver_range": "|"},  # Constrained by the python variant
+            "pyopentimelineio": {"ver_range": "|"},  # Constrained by the python variant
+            "pynanobind": {"ver_range": "|"},  # Constrained by the python variant
+            "pyrequests": {"ver_range": "|"},  # Constrained by the python variant
+            "python": {"ver_range": "|"},  # Constrained by the VFX variant
+            "pyside": {"ver_range": "|"},  # Constrained by the VFX variant
+            "pysix": {"ver_range": "|"},  # Constrained by the python variant
+            "qt": {"ver_range": "|"},  # Constrained by the VFX variant
             "WetaVFXPlatform": {"ver_range": VFX_RANGE},
         },
         "buildRequires": {
@@ -71,12 +75,17 @@ def make_app_version(conf):
                 "action": "env_prp",
             },
             {
+                "target": "PYTHONPATH",
+                "value": "${PREFIX}/flavor-dbg/WetaVFXPlatform-%(WETA_VFXPLATFORM_ID)s/plugins/Python",
+                "action": "env_prp",
+            },
+            {
                 "target": "RV_HOME",
                 "value": "${PREFIX}/flavor-opt/WetaVFXPlatform-%(WETA_VFXPLATFORM_ID)s",
                 "action": "env_set",
             },
         ],
-        **pak_vars
+        **pak_vars,
     )
 
     app_version_dbg = conf.makePak(
@@ -93,12 +102,17 @@ def make_app_version(conf):
                 "action": "env_prp",
             },
             {
+                "target": "PYTHONPATH",
+                "value": "${PREFIX}/flavor-dbg/WetaVFXPlatform-%(WETA_VFXPLATFORM_ID)s/plugins/Python",
+                "action": "env_prp",
+            },
+            {
                 "target": "RV_HOME",
                 "value": "${PREFIX}/flavor-dbg/WetaVFXPlatform-%(WETA_VFXPLATFORM_ID)s",
                 "action": "env_set",
             },
         ],
-        **pak_vars
+        **pak_vars,
     )
 
     return app_version, app_version_dbg
@@ -193,7 +207,9 @@ def configure(conf):
     for _ in conf.buildmatrix_make_nested_variants(
         ["flavor", "WetaVFXPlatform"],
         category="flavored_platform",
-        filter_variants={"WetaVFXPlatform": ["VP23"],},
+        filter_variants={
+            "WetaVFXPlatform": ["VP23"],
+        },
     ):
         # Use the flavor to determine the correct CMAKE_BUILD_TYPE
         build_type = "Debug" if conf.buildmatrix_get_flavor() == "dbg" else "Release"
@@ -247,6 +263,8 @@ def configure(conf):
 
 def build(bld):
 
+    install_tasks = []
+
     for _ in bld.iterVariants(category="flavored_platform"):
         vfx_build_task = bld.cmakeBuild(
             name="build",
@@ -256,6 +274,7 @@ def build(bld):
             name="install",
             dependsOn=[vfx_build_task],
         )
+        install_tasks.append(vfx_install_task)
 
         # Install rv packages manually as these aren't installed by cmake:
         bld(
@@ -277,6 +296,19 @@ def build(bld):
             dependsOn=[vfx_build_task],
             always=True,
         )
+
+    version_check_options = {
+        "check_undeclared_python_requirements": {
+            # pymu is injected by us here: src/lib/app/PyTwkApp/PyInterface.cpp
+            "ignore_modules": ["pymu"]
+        }
+    }
+
+    bld.runOzPerVersionChecks(
+        dependsOn=install_tasks,
+        description="Run pak level sanity checks",
+        options=version_check_options,
+    )
 
     if bld.isRelease():
         bld.setOzAppDetails(
