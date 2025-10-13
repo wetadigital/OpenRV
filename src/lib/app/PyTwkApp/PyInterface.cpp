@@ -468,6 +468,10 @@ namespace TwkApp
         PyObject* pymu = initPyMu();
 
         PyObject* pModule = PyImport_ImportModule("__main__");
+        if (!pModule)
+        {
+            PyErr_Print();  // Print error to stderr
+        }
 
         pyEventType()->tp_new = reinterpret_cast<newfunc>(PyType_GenericNew);
 
@@ -487,6 +491,10 @@ namespace TwkApp
         Py_XDECREF(pModule);
 
         PyObject* rcs = PyImport_ImportModule("rv_commands_setup");
+        if (!rcs)
+        {
+            PyErr_Print();  // Print error to stderr
+        }
 
         std::ifstream fileSteam(rcfile);
         if (fileSteam.is_open())
