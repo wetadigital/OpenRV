@@ -85,7 +85,7 @@ def make_app_version(conf):
                 "action": "env_set",
             },
         ],
-        **pak_vars
+        **pak_vars,
     )
 
     app_version_dbg = conf.makePak(
@@ -112,7 +112,7 @@ def make_app_version(conf):
                 "action": "env_set",
             },
         ],
-        **pak_vars
+        **pak_vars,
     )
 
     return app_version, app_version_dbg
@@ -207,7 +207,9 @@ def configure(conf):
     for _ in conf.buildmatrix_make_nested_variants(
         ["flavor", "WetaVFXPlatform"],
         category="flavored_platform",
-        filter_variants={"WetaVFXPlatform": ["VP23"],},
+        filter_variants={
+            "WetaVFXPlatform": ["VP23"],
+        },
     ):
         # Use the flavor to determine the correct CMAKE_BUILD_TYPE
         build_type = "Debug" if conf.buildmatrix_get_flavor() == "dbg" else "Release"
