@@ -22,10 +22,19 @@ ADD_LIBRARY(
         ${_sources}
 )
 
+FIND_PACKAGE(Python3 REQUIRED COMPONENTS Development)
+
 TARGET_LINK_LIBRARIES(
         ${_target}
-        PUBLIC RvApp TwkMediaLibrary Python::Python
+        PUBLIC RvApp TwkMediaLibrary Python3::Python
         PRIVATE TwkPython TwkUtil
+)
+
+# WETA: rpath libpython directly to avoid picking up the system install
+SET_TARGET_PROPERTIES(
+        ${_target} PROPERTIES
+        SKIP_INSTALL_RPATH FALSE
+        INSTALL_RPATH "${Python3_LIBRARY_DIRS}"
 )
 
 TARGET_INCLUDE_DIRECTORIES(

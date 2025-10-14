@@ -41,6 +41,8 @@ IF(RV_TARGET_WINDOWS)
   )
 ENDIF()
 
+FIND_PACKAGE(Boost REQUIRED COMPONENTS program_options)
+
 TARGET_LINK_LIBRARIES(
   ${_target}
   PRIVATE BlackmagicDeckLinkSDK Boost::program_options TwkApp TwkGLF TwkUtil

@@ -378,6 +378,9 @@ int utf8Main(int argc, char* argv[])
 
     TwkUtil::MemPool::initialize();
 
+    // Prevent Mu Commands Browser window from only showing blank pages
+    QApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
+
     string altPrefsPath;
     for (size_t i = 0; i < argc; i++)
     {

@@ -208,6 +208,16 @@ TARGET_INCLUDE_DIRECTORIES(
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+FIND_PACKAGE(Boost REQUIRED COMPONENTS thread)
+FIND_PACKAGE(imgui REQUIRED)
+FIND_PACKAGE(imgui_backend_qt REQUIRED)
+FIND_PACKAGE(imgui_node_editor REQUIRED)
+FIND_PACKAGE(implot REQUIRED)
+# Our copy of imgui also requires GLUT and Vulkan:
+FIND_PACKAGE(freeglut REQUIRED)
+FIND_PACKAGE(vulkansdk REQUIRED)
+FIND_PACKAGE(Python3 REQUIRED COMPONENTS Development)
+
 TARGET_LINK_LIBRARIES(
   ${_target}
   PUBLIC IPCore
@@ -228,7 +238,7 @@ TARGET_LINK_LIBRARIES(
          Qt::Widgets
          Qt::OpenGL
          ${QT6_QOPENGLWIDGET_TARGET}
-  PRIVATE Python::Python
+  PRIVATE Python3::Python
           IPBaseNodes
           ${RV_QT_MU_TARGET}
           MuPy
@@ -254,6 +264,18 @@ TARGET_LINK_LIBRARIES(
           spdlog::spdlog
           ImGuiPythonBridge
           imgui::imgui
+          imgui_backend_qt::imgui_backend_qt
+          imgui_node_editor::imgui_node_editor
+          implot::implot
+          freeglut::freeglut
+          vulkansdk::vulkansdk
+)
+
+# WETA: rpath libpython directly to avoid picking up the system install
+SET_TARGET_PROPERTIES(
+  ${_target} PROPERTIES
+  SKIP_INSTALL_RPATH FALSE
+  INSTALL_RPATH "${Python3_LIBRARY_DIRS}"
 )
 
 IF(RV_TARGET_DARWIN)

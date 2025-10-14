@@ -28,11 +28,15 @@ FIND_PACKAGE(
   REQUIRED
 )
 
+FIND_PACKAGE(Boost REQUIRED)
+FIND_PACKAGE(openexr REQUIRED)
+FIND_PACKAGE(yamlcpp REQUIRED)
+
 TARGET_LINK_LIBRARIES(
   ${_target}
   PUBLIC MuTwkApp
   PRIVATE IOproxy
-          OpenEXR::OpenEXR
+          openexr::openexr
           MovieFB
           TwkFB
           MovieProcedural
@@ -44,7 +48,7 @@ TARGET_LINK_LIBRARIES(
           arg
           stl_ext
           Boost::headers
-          yaml_cpp
+          yamlcpp::yamlcpp
           Qt::Core
           PyTwkApp
 )

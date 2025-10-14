@@ -29,6 +29,9 @@ TARGET_COMPILE_OPTIONS(
   PRIVATE ${RV_DEPS_AJA_COMPILE_OPTIONS}
 )
 
+FIND_PACKAGE(aja REQUIRED COMPONENTS ntv2)
+FIND_PACKAGE(Boost REQUIRED COMPONENTS program_options thread)
+
 TARGET_LINK_LIBRARIES(
   ${_target}
   PRIVATE aja::ntv2 Boost::program_options Boost::thread TwkApp TwkGLF TwkUtil

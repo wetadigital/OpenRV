@@ -23,9 +23,12 @@ SET_TARGET_PROPERTIES(
   PROPERTIES PREFIX ""
 )
 
+FIND_PACKAGE(Boost REQUIRED COMPONENTS program_options)
+FIND_PACKAGE(openexr REQUIRED)
+
 TARGET_LINK_LIBRARIES(
   ${_target}
-  PRIVATE IOexr Boost::program_options OpenEXR::OpenEXR
+  PRIVATE IOexr Boost::program_options openexr::openexr
 )
 
 RV_STAGE(TYPE "IMAGE_FORMAT" TARGET ${_target})

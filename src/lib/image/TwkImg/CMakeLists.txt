@@ -24,10 +24,13 @@ TARGET_INCLUDE_DIRECTORIES(
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+FIND_PACKAGE(openexr REQUIRED)
+FIND_PACKAGE(tiff REQUIRED)
+
 TARGET_LINK_LIBRARIES(
   ${_target}
-  PUBLIC TwkMath OpenEXR::OpenEXR
-  PRIVATE TwkUtil Tiff::Tiff
+  PUBLIC TwkMath openexr::openexr
+  PRIVATE TwkUtil tiff::tiff
 )
 
 RV_STAGE(TYPE "LIBRARY" TARGET ${_target})

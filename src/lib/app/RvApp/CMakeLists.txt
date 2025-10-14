@@ -32,10 +32,12 @@ TARGET_INCLUDE_DIRECTORIES(
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+FIND_PACKAGE(Python3 REQUIRED COMPONENTS Development)
+
 TARGET_LINK_LIBRARIES(
   ${_target}
   PUBLIC IPCore Mu MuLang TwkMovie TwkFBAux
-  PRIVATE Python::Python
+  PRIVATE Python3::Python
           IPBaseNodes
           IPMu
           MuAutoDoc
@@ -62,6 +64,13 @@ TARGET_LINK_LIBRARIES(
           CDL
 )
 
+# WETA: rpath libpython directly to avoid picking up the system install
+SET_TARGET_PROPERTIES(
+  ${_target} PROPERTIES
+  SKIP_INSTALL_RPATH FALSE
+  INSTALL_RPATH "${Python3_LIBRARY_DIRS}"
+)
+
 IF(RV_TARGET_WINDOWS)
   TARGET_LINK_LIBRARIES(
     ${_target}
@@ -72,9 +81,10 @@ IF(RV_TARGET_WINDOWS)
     PRIVATE "-wd4355"
   )
 ELSE()
+  FIND_PACKAGE(bdwgc REQUIRED)
   TARGET_LINK_LIBRARIES(
     ${_target}
-    PRIVATE BDWGC::Gc
+    PRIVATE bdwgc::bdwgc
   )
 ENDIF()
 

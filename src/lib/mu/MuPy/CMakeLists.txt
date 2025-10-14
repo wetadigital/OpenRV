@@ -24,10 +24,20 @@ TARGET_INCLUDE_DIRECTORIES(
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+FIND_PACKAGE(imath REQUIRED)
+FIND_PACKAGE(Python3 REQUIRED COMPONENTS Development)
+
 TARGET_LINK_LIBRARIES(
   ${_target}
-  PUBLIC Python::Python Mu
-  PRIVATE MuLang Imath::Imath TwkPython
+  PUBLIC Python3::Python Mu
+  PRIVATE MuLang imath::imath TwkPython
+)
+
+# WETA: rpath libpython directly to avoid picking up the system install
+SET_TARGET_PROPERTIES(
+  ${_target} PROPERTIES
+  SKIP_INSTALL_RPATH FALSE
+  INSTALL_RPATH "${Python3_LIBRARY_DIRS}"
 )
 
 RV_STAGE(TYPE "LIBRARY" TARGET ${_target})

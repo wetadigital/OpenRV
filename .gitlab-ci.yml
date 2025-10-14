@@ -1,0 +1,40 @@
+default:
+  tags:
+    - shared-runner:nfs
+
+
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+  KUBERNETES_CPU_LIMIT: "16"
+  KUBERNETES_MEMORY_REQUEST: "32Gi"
+
+
+# Components to include
+include:
+  - component: $CI_SERVER_HOST/buildenv/ci-components/wak/deploy@~latest
+    inputs:
+      job-name: full_build_test
+  - component: $CI_SERVER_HOST/buildenv/ci-components/wak/release_from_tag@~latest
+    inputs:
+      wak-tag-prefix: weta/openrv-
+  - component: $CI_SERVER_HOST/buildenv/ci-components/wak/deploy_custom_version@~latest
+    inputs:
+      wak-tag-prefix: weta/openrv-
+
+
+stages:
+  # Component specific stages
+  - build
+  - release
+
+
+# Update the rules for the build to trigger on MR instead of branch
+full_build_test:
+  only:
+    - merge_requests
+  artifacts:
+    # Store log files under build directory
+    paths:
+      - build/*.log
+    # Always upload artifacts even when the job fails.
+    when: always

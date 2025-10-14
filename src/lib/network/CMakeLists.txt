@@ -4,4 +4,4 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 ADD_SUBDIRECTORY(TwkQtChat)
-ADD_SUBDIRECTORY(QtBonjour)
+#ADD_SUBDIRECTORY(QtBonjour)

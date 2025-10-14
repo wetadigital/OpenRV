@@ -59,10 +59,13 @@ TARGET_INCLUDE_DIRECTORIES(
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+FIND_PACKAGE(aio REQUIRED)
+FIND_PACKAGE(Boost REQUIRED COMPONENTS system thread)
+
 TARGET_LINK_LIBRARIES(
   ${_target}
   PUBLIC Boost::thread TwkExc TwkMath spdlog::spdlog
-  PRIVATE Boost::system Qt::Core stl_ext
+  PRIVATE Boost::system Qt::Core stl_ext aio::aio
 )
 
 IF(RV_TARGET_LINUX)
@@ -78,13 +81,6 @@ ELSEIF(RV_TARGET_WINDOWS)
   TARGET_LINK_LIBRARIES(
     ${_target}
     PUBLIC win_pthreads win_posix
-  )
-ENDIF()
-
-IF(RV_TARGET_LINUX)
-  TARGET_LINK_LIBRARIES(
-    ${_target}
-    PRIVATE aio
   )
 ENDIF()
 
