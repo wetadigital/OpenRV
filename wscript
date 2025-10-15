@@ -141,6 +141,7 @@ def configure_cmake_folder(conf, path, **kwargs):
 def configure(conf):
     conf.env.WAK_APP_NAME = "openrv"
     conf.env.WAK_NON_CI_RELEASE_CMDS = ["tag"]
+    conf.env.WAK_SCM_TAG_PREFIX = 'weta/openrv-'
 
     conf.load("wak.tools")
     conf.load("wak.tools.deploySource")
