@@ -47,6 +47,7 @@ def make_app_version(conf):
             "libtiff": {"ver_range": "|"},  # Constrained by the VFX variant
             "OpenColorIO": {"ver_range": "|"},  # Constrained by the VFX variant
             "pyimgui": {"ver_range": "|"},  # Constrained by the python variant
+            "pyopengl": {"ver_range": "|"},  # Constrained by the python variant
             "pyopentimelineio": {"ver_range": "|"},  # Constrained by the python variant
             "pynanobind": {"ver_range": "|"},  # Constrained by the python variant
             "pyrequests": {"ver_range": "|"},  # Constrained by the python variant
