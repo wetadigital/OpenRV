@@ -225,9 +225,9 @@ def configure(conf):
         conf.env.env["no_proxy"] = "localhost,127.0.0.0/8,wetafx.co.nz"
 
         conf.env.env["WETA_Qt5_CMAKE_CONFIG_DIR"] = f"{conf.env.QTDIR}/lib/cmake"
-        conf.env.env[
-            "WETA_jpegturbo_CMAKE_CONFIG_DIR"
-        ] = f"{conf.path}/tmp/{conf.env.BOB_ABI}"
+        conf.env.env["WETA_jpegturbo_CMAKE_CONFIG_DIR"] = (
+            f"{conf.path}/tmp/{conf.env.BOB_ABI}"
+        )
 
         # TODO: Fix up base paks
         conf.env.env["LIBIMGUI_BACKEND_QT_TYPE"] = "shared"
@@ -313,19 +313,33 @@ def build_install_packages(bld, install_task):
     tasks = []
 
     with bld.useVariant("package_install"):
-        tasks.append(bld(
-            rule=" ".join([
-                'rvpkg',
-                "-force",
-                "-install",
-                "-add",
-                package_install_dir,
-            ] + [" {}".format(os.path.join('build', bld.env.WAK_CMAKE_BUILD_DIR, 'stage', 'packages', f'{package}.rvpkg')) for package in packages]),
-            # Depend on the install task to make sure bld.env.PREFIX exists already
-            dependsOn=[install_task],
-            cwd=bld.path,
-            always=True,
-        ))
+        tasks.append(
+            bld(
+                rule=" ".join(
+                    [
+                        "rvpkg",
+                        "-force",
+                        "-install",
+                        "-add",
+                        package_install_dir,
+                    ]
+                    + [
+                        os.path.join(
+                            "build",
+                            bld.env.WAK_CMAKE_BUILD_DIR,
+                            "stage",
+                            "packages",
+                            f"{package}.rvpkg",
+                        )
+                        for package in packages
+                    ]
+                ),
+                # Depend on the install task to make sure bld.env.PREFIX exists already
+                dependsOn=[install_task],
+                cwd=bld.path,
+                always=True,
+            )
+        )
 
     return tasks
 
