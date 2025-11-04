@@ -385,20 +385,21 @@ def build(bld):
     )
 
     if bld.isRelease():
-        bld.setOzAppDetails(
-            app=f"{bld.env.WAK_APP_NAME}",
-            options={
-                "contacts": {
-                    "Department": "Engineering",
-                    "Maintainer": "jbatchelor@wetafx.co.nz",
+        for app_name in ["openrv", "openrv_dbg"]:
+            bld.setOzAppDetails(
+                app=app_name,
+                options={
+                    "contacts": {
+                        "Department": "Engineering",
+                        "Maintainer": "jbatchelor@wetafx.co.nz",
+                    },
+                    "description": "Open source version of RV, the Sci-Tech award-winning media review and playback software.",
+                    "info": {
+                        "JIRA": f"https://jira.wetafx.co.nz/projects/HABITAT",
+                        "Teams": "https://teams.microsoft.com/l/channel/19%3A9464d1bfef714b7cb94b88c7feaa86fc%40thread.skype/build-test-deployment?groupId=b544b9ae-752e-45f6-843d-49fb0317a731&tenantId=5ecba919-6cf8-411b-a462-db882331fd21",
+                    },
+                    "third_party": True,
+                    "license": "Apache License Version 2.0",
                 },
-                "description": "Open source version of RV, the Sci-Tech award-winning media review and playback software.",
-                "info": {
-                    "JIRA": f"https://jira.wetafx.co.nz/projects/HABITAT",
-                    "Teams": "https://teams.microsoft.com/l/channel/19%3A9464d1bfef714b7cb94b88c7feaa86fc%40thread.skype/build-test-deployment?groupId=b544b9ae-752e-45f6-843d-49fb0317a731&tenantId=5ecba919-6cf8-411b-a462-db882331fd21",
-                },
-                "third_party": True,
-                "license": "Apache License Version 2.0",
-            },
-            description="set/refresh the app metadata",
-        )
+                description="set/refresh the app metadata",
+            )
