@@ -267,7 +267,11 @@ def configure(conf):
 
 
 def build_install_packages(bld, install_task):
+    """Use the newly built rvpkg binary to install all default OpenRV plugins"""
 
+    # Manual list of all .rvpkg files we build to avoid a chicken-and-egg
+    # problem when generating the build task before the package files
+    # themselves are built.
     packages = [
         "additional_nodes-1.2",
         "data_display_indicators-1.2",
@@ -310,11 +314,8 @@ def build_install_packages(bld, install_task):
     # otherwise we have to use '..' which rvpkg doesn't like
     package_install_dir = f"{bld.env.PREFIX}/plugins"
 
-    tasks = []
-
     with bld.useVariant("package_install"):
-        tasks.append(
-            bld(
+        return bld(
                 rule=" ".join(
                     [
                         "rvpkg",
@@ -339,9 +340,6 @@ def build_install_packages(bld, install_task):
                 cwd=bld.path,
                 always=True,
             )
-        )
-
-    return tasks
 
 
 def build(bld):
