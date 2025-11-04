@@ -47,6 +47,7 @@ def make_app_version(conf):
             "libtiff": {"ver_range": "|"},  # Constrained by the VFX variant
             "OpenColorIO": {"ver_range": "|"},  # Constrained by the VFX variant
             "pyimgui": {"ver_range": "|"},  # Constrained by the python variant
+            "pyopengl": {"ver_range": "|"},  # Constrained by the python variant
             "pyopentimelineio": {"ver_range": "|"},  # Constrained by the python variant
             "pynanobind": {"ver_range": "|"},  # Constrained by the python variant
             "pyrequests": {"ver_range": "|"},  # Constrained by the python variant
@@ -115,7 +116,7 @@ def make_app_version(conf):
         **pak_vars,
     )
 
-    return app_version, app_version_dbg
+    return [f"{app_version}@now", f"{app_version_dbg}@now"]
 
 
 def configure_cmake_folder(conf, path, **kwargs):
@@ -141,7 +142,7 @@ def configure_cmake_folder(conf, path, **kwargs):
 def configure(conf):
     conf.env.WAK_APP_NAME = "openrv"
     conf.env.WAK_NON_CI_RELEASE_CMDS = ["tag"]
-    conf.env.WAK_SCM_TAG_PREFIX = 'weta/openrv-'
+    conf.env.WAK_SCM_TAG_PREFIX = "weta/openrv-"
 
     conf.load("wak.tools")
     conf.load("wak.tools.deploySource")
@@ -157,7 +158,7 @@ def configure(conf):
     conf.env.WAK_STAGED_RELEASE_SRC_PERMS = "0444"
 
     # Make the lib pak
-    make_app_version(conf)
+    paks = make_app_version(conf)
 
     requirements = [
         "OpenColorIO",
@@ -256,10 +257,89 @@ def configure(conf):
             RV_FFMPEG_NON_FREE_DECODERS_TO_ENABLE="hevc;aac;mpeg2video;prores;dnxhd",
         )
 
+        with conf.makeVariant("package_install"):
+            conf.buildmatrix_oz(area="/", add=paks, build=False)
+
 
 # -------------------------------------------------
 # Build
 # -------------------------------------------------
+
+
+def build_install_packages(bld, install_task):
+    """Use the newly built rvpkg binary to install all default OpenRV plugins"""
+
+    # Manual list of all .rvpkg files we build to avoid a chicken-and-egg
+    # problem when generating the build task before the package files
+    # themselves are built.
+    packages = [
+        "additional_nodes-1.2",
+        "data_display_indicators-1.2",
+        "missing_frame_bling-1.7",
+        "pyhello-1.2",
+        "session_manager-1.9",
+        "annotate-1.20",
+        "doc_browser-1.4",
+        "multiple_source_media_rep-1.3",
+        "pymystuff-1.2",
+        "source_setup-4.3",
+        "annot_tools-0.1",
+        "export_cuts-1.5",
+        "node_graph_viz-0.1",
+        "pyside_example-1.2",
+        "stereo_autoload-1.6",
+        "channel_select-1.3",
+        "lat_long_viewer-1.2",
+        "ocio_source_setup-2.5",
+        "rvio_basic_scripts-1.2",
+        "stereo_disassembly-1.3",
+        "collapse_missing_frames-1.2",
+        "layer_select-1.7",
+        "openrv_help_menu-1.0",
+        "rvnuke-1.12",
+        "sync-1.5",
+        "custom_lut_menu_mode-2.9",
+        "maya_tools-1.6",
+        "os_dependent_path_conversion_mode-1.7",
+        "scrub_offset-1.6",
+        "webview2-0.3",
+        "custom_mattes-2.3",
+        "media_library_demo-1.0",
+        "otio_reader-1.2",
+        "sequence_from_file-1.4",
+        "window_title-1.6",
+    ]
+
+    # Configure this here to avoid 'package_install' being added to bld.env.PREFIX,
+    # otherwise we have to use '..' which rvpkg doesn't like
+    package_install_dir = f"{bld.env.PREFIX}/plugins"
+
+    with bld.useVariant("package_install"):
+        return bld(
+                rule=" ".join(
+                    [
+                        "rvpkg",
+                        "-force",
+                        "-install",
+                        "-add",
+                        package_install_dir,
+                    ]
+                    + [
+                        os.path.join(
+                            "build",
+                            bld.env.WAK_CMAKE_BUILD_DIR,
+                            "stage",
+                            "packages",
+                            f"{package}.rvpkg",
+                        )
+                        for package in packages
+                    ]
+                ),
+                # Depend on the install task to make sure bld.env.PREFIX exists already
+                dependsOn=[install_task],
+                cwd=bld.path,
+                always=True,
+            )
 
 
 def build(bld):
@@ -277,14 +357,7 @@ def build(bld):
         )
         install_tasks.append(vfx_install_task)
 
-        # Install rv packages manually as these aren't installed by cmake:
-        bld(
-            rule=f"mkdir -p {bld.env.PREFIX}/plugins/Packages && cp {os.path.join('build', bld.env.WAK_VARIANT_FOLDER, '*', 'stage', 'packages', '*.rvpkg')} {bld.env.PREFIX}/plugins/Packages",
-            # Depend on the install task to make sure bld.env.PREFIX exists already
-            dependsOn=[vfx_install_task],
-            cwd=bld.path,
-            always=True,
-        )
+        build_install_packages(bld, vfx_install_task)
 
         # Copy the required QT binaries/resources into our pak as OpenRV expects
         # this. It is possible to edit the qt.conf files throughout this repo to
