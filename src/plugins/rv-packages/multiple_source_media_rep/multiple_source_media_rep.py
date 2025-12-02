@@ -10,9 +10,11 @@
 
 try:
     from PySide2 import QtCore, QtGui, QtWidgets
+    from PySide2.QtWidgets import QAction
 except ImportError:
     try:
         from PySide6 import QtCore, QtGui, QtWidgets
+        from PySide6.QtGui import QAction
     except ImportError:
         pass
 
@@ -393,7 +395,7 @@ class MultipleSourceMediaRepMode(rvtypes.MinorMode):
             return
 
         # Menu title.
-        title = QtGui.QAction("Media Playback", menu)
+        title = QAction("Media Playback", menu)
         title.setEnabled(False)
         menu.addAction(title)
         menu.addSeparator()
