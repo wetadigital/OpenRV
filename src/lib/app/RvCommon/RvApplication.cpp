@@ -780,7 +780,7 @@ namespace Rv
         auto isVirtualDesktop = [&screens, primaryScreen]() -> bool
         {
             // Not a virtual desktop if there is only one screen.
-            if (screens.size() <= 1)
+            if (!primaryScreen || screens.size() <= 1)
                 return false;
 
             QRect totalGeometry;
