@@ -786,7 +786,10 @@ namespace Rv
             QRect totalGeometry;
             for (const auto& screen : screens)
             {
-                totalGeometry = totalGeometry.united(screen->geometry());
+                if (screen)
+                {
+                    totalGeometry = totalGeometry.united(screen->geometry());
+                }
             }
 
             return totalGeometry != primaryScreen->geometry();
@@ -796,7 +799,7 @@ namespace Rv
         {
             for (int i = 0; i < screens.size(); ++i)
             {
-                if (screens[i]->geometry().contains(point))
+                if (screens[i] && screens[i]->geometry().contains(point))
                 {
                     return i;
                 }
@@ -847,13 +850,19 @@ namespace Rv
         //  same relative position on the correct screen.
         //
         {
-            QRect rnew = QGuiApplication::screens().at(screen)->geometry();
-            QRect rold = QGuiApplication::screens().at(oldScreen)->geometry();
+            QScreen* newScreen = QGuiApplication::screens().at(screen);
+            QScreen* oldScreenPtr = QGuiApplication::screens().at(oldScreen);
 
-            int xoff = oldX - rold.x();
-            int yoff = oldY - rold.y();
+            if (newScreen && oldScreenPtr)
+            {
+                QRect rnew = newScreen->geometry();
+                QRect rold = oldScreenPtr->geometry();
 
-            doc->move(rnew.x() + xoff, rnew.y() + yoff);
+                int xoff = oldX - rold.x();
+                int yoff = oldY - rold.y();
+
+                doc->move(rnew.x() + xoff, rnew.y() + yoff);
+            }
         }
 
         if (opts.fullscreen && !doc->isFullScreen())
