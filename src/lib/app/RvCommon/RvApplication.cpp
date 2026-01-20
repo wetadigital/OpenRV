@@ -843,25 +843,30 @@ namespace Rv
 
         int oldScreen = getScreenFromPoint(QPoint(oldX, oldY));
 
-        if (screen != -1 && isVirtualDesktop() && screen != oldScreen)
+        if (screen != -1 && oldScreen != -1 && isVirtualDesktop() && screen != oldScreen)
         //
         //  The application is going to come up on the wrong screen, so figure
         //  out our our relative position on the current screen, and move to the
         //  same relative position on the correct screen.
         //
         {
-            QScreen* newScreen = QGuiApplication::screens().at(screen);
-            QScreen* oldScreenPtr = QGuiApplication::screens().at(oldScreen);
-
-            if (newScreen && oldScreenPtr)
+            // Validate screen indices before accessing
+            if (screen >= 0 && screen < screens.size() &&
+                oldScreen >= 0 && oldScreen < screens.size())
             {
-                QRect rnew = newScreen->geometry();
-                QRect rold = oldScreenPtr->geometry();
+                QScreen* newScreen = screens.at(screen);
+                QScreen* oldScreenPtr = screens.at(oldScreen);
 
-                int xoff = oldX - rold.x();
-                int yoff = oldY - rold.y();
+                if (newScreen && oldScreenPtr)
+                {
+                    QRect rnew = newScreen->geometry();
+                    QRect rold = oldScreenPtr->geometry();
 
-                doc->move(rnew.x() + xoff, rnew.y() + yoff);
+                    int xoff = oldX - rold.x();
+                    int yoff = oldY - rold.y();
+
+                    doc->move(rnew.x() + xoff, rnew.y() + yoff);
+                }
             }
         }
 
