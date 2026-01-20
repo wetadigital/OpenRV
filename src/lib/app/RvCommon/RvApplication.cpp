@@ -816,7 +816,7 @@ namespace Rv
         {
             if (opts.screen != -1 && isVirtualDesktop())
             {
-                if (opts.screen < screens.size())
+                if (opts.screen < screens.size() && screens[opts.screen])
                 {
                     QRect r = screens[opts.screen]->geometry();
                     opts.x += r.x();

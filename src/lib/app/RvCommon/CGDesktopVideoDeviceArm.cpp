@@ -429,10 +429,13 @@ namespace Rv
         for (int32_t i = 0; i < screens.count(); i++)
         {
             const QScreen* screen = screens[i];
-            QRect qtBounds = screen->geometry();
+            if (screen)
+            {
+                QRect qtBounds = screen->geometry();
 
-            if (qtBounds == cgBounds)
-                return i;
+                if (qtBounds == cgBounds)
+                    return i;
+            }
         }
 
         return -1;

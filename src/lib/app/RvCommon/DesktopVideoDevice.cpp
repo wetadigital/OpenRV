@@ -909,6 +909,20 @@ namespace Rv
     QRect DesktopVideoDevice::screenGeometry() const
     {
         const QList<QScreen*> screens = QGuiApplication::screens();
+
+        // Validate screen index and pointer
+        if (m_screen < 0 || m_screen >= screens.size() || !screens[m_screen])
+        {
+            // Fallback to primary screen or default geometry
+            QScreen* primaryScreen = QGuiApplication::primaryScreen();
+            if (primaryScreen)
+            {
+                return primaryScreen->geometry();
+            }
+            // Last resort: return a default geometry
+            return QRect(0, 0, 1920, 1080);
+        }
+
         QRect g = screens[m_screen]->geometry();
 
 #ifdef DEBUG_NO_FULLSCREEN
@@ -968,7 +982,7 @@ namespace Rv
         const QList<QScreen*> screens = QGuiApplication::screens();
 
         // Ensure the screen index is valid.
-        if (m_screen < 0 || m_screen >= screens.size())
+        if (m_screen < 0 || m_screen >= screens.size() || !screens[m_screen])
         {
             m_colorProfile = ColorProfile();
             return m_colorProfile;
