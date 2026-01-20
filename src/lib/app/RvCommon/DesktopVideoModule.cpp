@@ -58,7 +58,7 @@ namespace Rv
         for (int screen = 0; screen < screens.size(); ++screen)
         {
             // Check if the point is part of the screen.
-            if (screens[screen]->geometry().contains(QPoint(x, y)))
+            if (screens[screen] && screens[screen]->geometry().contains(QPoint(x, y)))
             {
                 for (int i = 0; i < m_devices.size(); ++i)
                 {

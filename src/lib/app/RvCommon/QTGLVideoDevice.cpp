@@ -122,10 +122,11 @@ namespace Rv
                 dynamic_cast<const DesktopVideoDevice*>(d))
         {
             const QList<QScreen*> screens = QGuiApplication::screens();
-            if (desktopVideoDevice->qtScreen() < screens.size())
+            int screenIndex = desktopVideoDevice->qtScreen();
+            if (screenIndex >= 0 && screenIndex < screens.size() && screens[screenIndex])
             {
                 m_devicePixelRatio =
-                    screens[desktopVideoDevice->qtScreen()]->devicePixelRatio();
+                    screens[screenIndex]->devicePixelRatio();
             }
         }
     }
